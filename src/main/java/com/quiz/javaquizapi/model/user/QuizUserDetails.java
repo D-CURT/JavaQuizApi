@@ -1,12 +1,15 @@
 package com.quiz.javaquizapi.model.user;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-
+/**
+ * Provides functionality to operate with security user details.
+ */
 public record QuizUserDetails(User user) implements UserDetails {
 
     @Override

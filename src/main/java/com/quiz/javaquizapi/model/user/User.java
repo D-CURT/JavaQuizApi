@@ -1,19 +1,24 @@
 package com.quiz.javaquizapi.model.user;
 
-import com.quiz.javaquizapi.model.AbstractEntity;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
+import com.quiz.javaquizapi.model.AbstractEntity;
 
+/**
+ * Contains a user details.
+ */
 @Entity
 @Getter
 @Setter
@@ -22,6 +27,7 @@ import java.time.LocalDateTime;
 @SequenceGenerator(name = "id_gen", sequenceName = "user_seq", allocationSize = 5)
 public class User extends AbstractEntity {
 
+    @NotNull
     private String username;
 
     private String password;

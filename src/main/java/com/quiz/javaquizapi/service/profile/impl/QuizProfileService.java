@@ -1,13 +1,17 @@
 package com.quiz.javaquizapi.service.profile.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import com.quiz.javaquizapi.dao.ProfileRepository;
 import com.quiz.javaquizapi.dao.UserRepository;
 import com.quiz.javaquizapi.model.profile.Profile;
 import com.quiz.javaquizapi.model.profile.Tiers;
 import com.quiz.javaquizapi.service.profile.ProfileService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
+/**
+ * Provides functionality to operate with a user {@link Profile}.
+ */
 @Service
 @RequiredArgsConstructor
 public class QuizProfileService implements ProfileService {
