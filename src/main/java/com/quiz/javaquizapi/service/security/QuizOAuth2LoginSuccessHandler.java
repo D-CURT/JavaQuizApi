@@ -1,9 +1,10 @@
 package com.quiz.javaquizapi.service.security;
 
-import com.quiz.javaquizapi.dao.UserRepository;
-import com.quiz.javaquizapi.model.user.Providers;
-import com.quiz.javaquizapi.model.user.Roles;
-import com.quiz.javaquizapi.model.user.User;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -11,11 +12,14 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.quiz.javaquizapi.dao.UserRepository;
+import com.quiz.javaquizapi.model.user.Providers;
+import com.quiz.javaquizapi.model.user.Roles;
+import com.quiz.javaquizapi.model.user.User;
 
+/**
+ * Provides functionality to integrate a user authorized by an external provider into the Quiz API.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

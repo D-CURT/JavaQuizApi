@@ -1,6 +1,8 @@
 package com.quiz.javaquizapi.config;
 
 import com.quiz.javaquizapi.dao.UserRepository;
+import com.quiz.javaquizapi.service.security.QuizAuthenticationEntryPoint;
+import com.quiz.javaquizapi.service.security.QuizAuthenticationFailureHandler;
 import com.quiz.javaquizapi.service.security.QuizOAuth2LoginSuccessHandler;
 import com.quiz.javaquizapi.service.security.QuizUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,15 +23,17 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     private final UserRepository userRepository;
     private final QuizOAuth2LoginSuccessHandler successHandler;
-    private AuthenticationManager authenticationManager;
+    private final QuizAuthenticationFailureHandler failureHandler;
+    private final QuizAuthenticationEntryPoint entryPoint;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -48,32 +53,36 @@ public class SecurityConfig {
         return provider;
     }
 
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder) throws Exception {
-        builder.authenticationProvider(authenticationProvider());
-        return authenticationManager;
+        return builder.build();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder managerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManager = managerBuilder.userDetailsService(userDetailsService())
+        managerBuilder.userDetailsService(userDetailsService())
                 .passwordEncoder(passwordEncoder())
                 .and()
-                .authenticationProvider(authenticationProvider())
-                .build();
+                .authenticationProvider(authenticationProvider());
         http.authorizeRequests()
-                .antMatchers("/home", "/oauth2/**").permitAll()
+                .antMatchers(SwaggerConfig.SWAGGER_URLS).permitAll()
+                .antMatchers("/", "/user/authorization").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .authenticationManager(authenticationManager)
-                .formLogin()
+                .formLogin().loginPage("/login").permitAll()
+                .failureHandler(failureHandler)
+                .defaultSuccessUrl("/user")
                 .and()
                 .oauth2Login()
                 .userInfoEndpoint().oidcUserService(oidcUserService())
                 .and()
-                .successHandler(successHandler);
+                .successHandler(successHandler)
+                .defaultSuccessUrl("/user")
+                .and()
+                .authenticationManager(authenticationManager(managerBuilder))
+                .exceptionHandling().authenticationEntryPoint(entryPoint)
+                .and().csrf().disable();
         return http.build();
     }
 
