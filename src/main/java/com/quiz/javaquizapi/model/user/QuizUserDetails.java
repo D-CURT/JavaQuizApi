@@ -27,6 +27,10 @@ public record QuizUserDetails(User user) implements UserDetails {
         return user.getUsername();
     }
 
+    public String getDisplayName() {
+        return user.getDisplayName();
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -45,5 +49,9 @@ public record QuizUserDetails(User user) implements UserDetails {
     @Override
     public boolean isEnabled() {
         return user.isEnabled();
+    }
+
+    public boolean isArchived() {
+        return !isEnabled();
     }
 }

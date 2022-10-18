@@ -3,7 +3,7 @@ package com.quiz.javaquizapi.service.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quiz.javaquizapi.model.http.CommonErrors;
 import com.quiz.javaquizapi.model.http.Response;
-import com.quiz.javaquizapi.service.ResponseService;
+import com.quiz.javaquizapi.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
