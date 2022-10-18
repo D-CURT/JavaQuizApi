@@ -1,4 +1,4 @@
-package com.quiz.javaquizapi.service;
+package com.quiz.javaquizapi.service.response;
 
 import java.util.Optional;
 

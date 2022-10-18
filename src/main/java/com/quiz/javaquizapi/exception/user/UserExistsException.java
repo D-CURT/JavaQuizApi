@@ -1,11 +1,11 @@
-package com.quiz.javaquizapi.exception;
+package com.quiz.javaquizapi.exception.user;
 
 import org.springframework.http.HttpStatus;
 
 /**
- * Thrown by the Quiz API to handle all the failures related to a {@link com.quiz.javaquizapi.model.user.User}.
+ * Thrown by the Quiz API when a user with provided username already exists.
  */
-public class UserExistsException extends QuizException {
+public class UserExistsException extends UserException {
 
     /**
      * This constant provides an error code for the case when a user already exists.
@@ -16,10 +16,5 @@ public class UserExistsException extends QuizException {
 
     public UserExistsException(String message, String username) {
         super(HttpStatus.CONFLICT, message, USER_EXISTS_CODE, username);
-    }
-
-    @Override
-    protected String getGroup() {
-        return "user_exists";
     }
 }
