@@ -2,7 +2,7 @@ package com.quiz.javaquizapi.exception;
 
 import com.quiz.javaquizapi.model.http.CommonErrors;
 import com.quiz.javaquizapi.model.http.Response;
-import com.quiz.javaquizapi.service.ResponseService;
+import com.quiz.javaquizapi.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -29,8 +29,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      * Handles all unexpected {@link Exception} and its extensions.
      *
      * @param exception thrown exception.
-     * @param request the current request details.
-     *
+     * @param request   the current request details.
      * @return {@link Response} wrapped by {@link ResponseEntity}.
      */
     @ExceptionHandler(Exception.class)
@@ -48,8 +47,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      * Handles {@link QuizException} and its extensions.
      *
      * @param exception thrown API exception.
-     * @param request the current request details.
-     *
+     * @param request   the current request details.
      * @return {@link Response} wrapped by {@link ResponseEntity}.
      */
     @ExceptionHandler(QuizException.class)
@@ -67,10 +65,9 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      * Handles {@link MethodArgumentNotValidException} thrown during DTOs validation.
      *
      * @param exception thrown validation exception.
-     * @param headers the current request headers.
-     * @param status default HTTP status.
-     * @param request the current request details.
-     *
+     * @param headers   the current request headers.
+     * @param status    default HTTP status.
+     * @param request   the current request details.
      * @return {@link Response} wrapped by {@link ResponseEntity}.
      */
     @Override

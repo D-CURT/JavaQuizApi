@@ -1,5 +1,6 @@
 package com.quiz.javaquizapi.service.security;
 
+import com.quiz.javaquizapi.model.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,6 +24,7 @@ public record QuizUserDetailsService(UserRepository userRepository) implements U
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return new QuizUserDetails(userRepository.findByUsername(username)
+                .filter(User::isEnabled)
                 .orElseThrow(() -> new UsernameNotFoundException("Could not find user by username '%s'"
                         .formatted(username))));
     }
