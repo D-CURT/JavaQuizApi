@@ -11,6 +11,8 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
  * Provides functionality to integrate a user authorized by an external provider into the Quiz API.
  */
@@ -29,12 +31,14 @@ public class QuizOAuth2LoginSuccessHandler implements ApplicationListener<Authen
                     .ifPresentOrElse(
                             user -> log.debug("Username '{}' already exists", user.getUsername()),
                             () -> {
-                                userRepository.save(new User()
+                                User user = new User()
                                         .setUsername(oidcUser.getEmail())
                                         .setDisplayName(oidcUser.getAttribute("name"))
                                         .setRole(Roles.USER)
                                         .setEnabled(Boolean.TRUE)
-                                        .setProvider(Providers.GOOGLE));
+                                        .setProvider(Providers.GOOGLE);
+                                user.setCode(UUID.randomUUID().toString());
+                                userRepository.save(user);
                                 log.info("A new user created");
                                 log.debug("Username '{}' resolved", oidcUser.getEmail());
                             });
