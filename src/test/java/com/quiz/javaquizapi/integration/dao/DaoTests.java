@@ -1,5 +1,9 @@
 package com.quiz.javaquizapi.integration.dao;
 
+import com.quiz.javaquizapi.dao.BaseRepository;
+import com.quiz.javaquizapi.model.user.Providers;
+import com.quiz.javaquizapi.model.user.Roles;
+import com.quiz.javaquizapi.model.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,18 +15,40 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityManagerFactory;
+import java.util.Optional;
+import java.util.UUID;
 
 @DataJpaTest
+@SuppressWarnings("all")
 @Getter(AccessLevel.PROTECTED)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public abstract class DaoTests {
+public abstract class DaoTests<R extends BaseRepository> {
 
-    public static final String EXECUTED_QUERIES_MESSAGE = "Expected number of executed queries should be equal to %s";
+    protected static final String EXECUTED_QUERIES_MESSAGE = "Expected number of executed queries should be equal to %s";
+
+    protected final User localUser;
+
     private Statistics statistics;
 
+    {
+        localUser = new User()
+                .setUsername("username")
+                .setPassword("password")
+                .setDisplayName("displayName")
+                .setRole(Roles.USER)
+                .setProvider(Providers.LOCAL)
+                .setEnabled(Boolean.TRUE);
+        localUser.setCode(UUID.randomUUID().toString());
+    }
+
     @Autowired
-    public void someService(EntityManagerFactory factory) {
-        this.statistics = factory.unwrap(SessionFactory.class).getStatistics();
+    private R repository;
+
+    @Autowired
+    private void initStatistics(EntityManagerFactory factory) {
+        this.statistics = Optional.ofNullable(factory.unwrap(SessionFactory.class))
+                .orElseThrow(() -> new IllegalStateException("Unable to load Hibernate session statistics"))
+                .getStatistics();
     }
 
     protected void assertExecutedQueries() {
@@ -38,13 +64,13 @@ public abstract class DaoTests {
     @RequiredArgsConstructor
     @Getter(AccessLevel.PRIVATE)
     protected enum ExecutedQueries {
-        ONE(1L);
+        ONE(1);
 
-        private final Long count;
+        private final long count;
 
         @Override
         public String toString() {
-            return count.toString();
+            return String.valueOf(count);
         }
     }
 }
