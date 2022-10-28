@@ -26,7 +26,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,7 +60,7 @@ public class UserServiceTests extends ApiTests {
 
     @Test
     @DisplayName("Fetch me by username")
-    public void testFetchingMe() throws Exception {
+    public void testFetchingMe() {
         when(repository.findByUsername(localUser.getUsername())).thenReturn(Optional.of(localUser));
         User me = service.getMe(localUser.getUsername());
         assertThat(me).isNotNull();
