@@ -1,4 +1,4 @@
-package com.quiz.javaquizapi.unit;
+package com.quiz.javaquizapi.unit.service.me;
 
 import com.quiz.javaquizapi.ApiTests;
 import com.quiz.javaquizapi.dao.UserRepository;

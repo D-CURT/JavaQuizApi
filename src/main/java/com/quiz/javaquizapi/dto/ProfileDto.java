@@ -18,5 +18,7 @@ import lombok.experimental.Accessors;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ProfileDto extends BaseDto {
     private Tiers tier;
+    private long score;
+    private String info;
     private String userCode;
 }
