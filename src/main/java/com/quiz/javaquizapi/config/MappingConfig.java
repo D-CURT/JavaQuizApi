@@ -22,6 +22,6 @@ public class MappingConfig {
     public void configure(ModelMapper mapper) {
         // TODO implement flexible mapping configuration mechanism
         TypeMap<User, UserDto> map = mapper.createTypeMap(User.class, UserDto.class);
-        map.addMappings(mapping -> mapping.skip(UserDto::setPassword));
+        map.addMappings(mapping -> mapping.using(converter -> null).map(User::getPassword, UserDto::setPassword));
     }
 }

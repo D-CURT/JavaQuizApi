@@ -10,7 +10,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+
 
 /**
  * Contains a user details.
@@ -18,9 +20,11 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
-@Table(name = "users")
 @Accessors(chain = true)
 @SequenceGenerator(name = "id_gen", sequenceName = "user_seq", allocationSize = 5)
+@Table(
+        name = "users",
+        uniqueConstraints = @UniqueConstraint(name = "UniqueNumberAndStatus", columnNames = { "username", "enabled" }))
 public class User extends BaseEntity {
 
     @NotNull

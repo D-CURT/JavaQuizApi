@@ -5,7 +5,6 @@ import com.quiz.javaquizapi.facade.me.MeFacade;
 import com.quiz.javaquizapi.model.BaseEntity;
 import com.quiz.javaquizapi.model.http.Response;
 import com.quiz.javaquizapi.service.response.ResponseService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -25,7 +24,7 @@ public abstract class BaseMeController<E extends BaseEntity, D extends BaseDto> 
      *
      * @return fetched data of {@link D} type.
      */
-    @GetMapping(value = StringUtils.EMPTY, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response getMe() {
         return getResponseService().build(getFacade().getMe(getCurrentUsername()));
     }

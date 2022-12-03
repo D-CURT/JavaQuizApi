@@ -6,6 +6,7 @@ import com.quiz.javaquizapi.facade.me.profile.ProfileFacade;
 import com.quiz.javaquizapi.model.http.Response;
 import com.quiz.javaquizapi.model.profile.Profile;
 import com.quiz.javaquizapi.service.response.ResponseService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class ProfileControllerV0 extends BaseMeController<Profile, ProfileDto> {
      *
      * @return a new {@link Profile}.
      */
-    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = StringUtils.EMPTY, produces = MediaType.APPLICATION_JSON_VALUE)
     public Response create() {
         return create(new ProfileDto().setUserCode(getCurrentUsername()));
     }
