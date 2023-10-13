@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -57,28 +58,27 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 exception,
                 responseService.buildError(exception.getData(), exception.getGroup(), exception.getCode(), exception.getArgs()),
                 new HttpHeaders(),
-                exception.getStatus(),
+                exception.getStatusCode(),
                 request);
     }
 
     /**
      * Handles {@link MethodArgumentNotValidException} thrown during DTOs validation.
      *
-     * @param exception thrown validation exception.
+     * @param ex thrown validation exception.
      * @param headers   the current request headers.
      * @param status    default HTTP status.
      * @param request   the current request details.
      * @return {@link Response} wrapped by {@link ResponseEntity}.
      */
     @Override
-    @SuppressWarnings("ALL")
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-                                                                  HttpHeaders headers, HttpStatus status,
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatusCode status,
                                                                   WebRequest request) {
-        FieldError fieldError = exception.getBindingResult().getFieldError();
+        FieldError fieldError = ex.getBindingResult().getFieldError();
         String defaultMessage = fieldError.getDefaultMessage();
         return handleExceptionInternal(
-                exception,
+                ex,
                 responseService.buildError(null, CommonErrors.VALIDATION.name(), defaultMessage, fieldError.getField()),
                 new HttpHeaders(),
                 HttpStatus.UNPROCESSABLE_ENTITY,

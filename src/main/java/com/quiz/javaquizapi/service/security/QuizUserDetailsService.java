@@ -7,10 +7,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.quiz.javaquizapi.dao.UserRepository;
 import com.quiz.javaquizapi.model.user.QuizUserDetails;
+import org.springframework.stereotype.Service;
 
 /**
  * Provides functionality to operate with security user details.
  */
+@Service
 public record QuizUserDetailsService(UserRepository userRepository) implements UserDetailsService {
     /**
      * Creates user details based on an existing user.

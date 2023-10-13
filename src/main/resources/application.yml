@@ -1,0 +1,32 @@
+server:
+  port: 8080
+#DB config
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 780161
+#OAuth2 config
+  security:
+    oauth2:
+      token:
+        access:
+          time-to-live-in-min: 30
+        refresh:
+          time-to-live-in-hour: 24
+        code:
+          time-to-live-in-min: 30
+      authorizationserver:
+        issuer-url: http://localhost:8080
+        introspection-endpoint: /oauth2/token-info
+      client:
+        registration:
+          google:
+            client-id: 63045766757-pr7bfcsdrd0n9feo9qaotoqic5clh1bq.apps.googleusercontent.com
+            client-secret: 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
+#Hibernate config
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update

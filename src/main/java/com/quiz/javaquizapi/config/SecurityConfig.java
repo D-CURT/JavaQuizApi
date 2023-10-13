@@ -1,20 +1,15 @@
 package com.quiz.javaquizapi.config;
 
-import com.quiz.javaquizapi.dao.UserRepository;
-import com.quiz.javaquizapi.service.security.QuizAuthenticationEntryPoint;
 import com.quiz.javaquizapi.service.security.QuizAuthenticationFailureHandler;
+import com.quiz.javaquizapi.service.security.QuizOAuth2LoginSuccessHandler;
 import com.quiz.javaquizapi.service.security.QuizUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -30,15 +25,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class SecurityConfig implements WebMvcConfigurer {
 
-    private final UserRepository userRepository;
-    private final ApplicationEventPublisher eventPublisher;
     private final QuizAuthenticationFailureHandler failureHandler;
-    private final QuizAuthenticationEntryPoint entryPoint;
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new QuizUserDetailsService(userRepository);
-    }
+    private final QuizOAuth2LoginSuccessHandler successHandler;
+    private final QuizUserDetailsService userDetailsService;
+    private final OidcUserService userService = new OidcUserService();
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,47 +38,35 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
+        provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder) throws Exception {
-        builder.authenticationEventPublisher(new DefaultAuthenticationEventPublisher(eventPublisher));
-        return builder.build();
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder managerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        managerBuilder.userDetailsService(userDetailsService())
-                .passwordEncoder(passwordEncoder())
-                .and()
-                .authenticationProvider(authenticationProvider());
-        http.authorizeRequests()
-                .antMatchers("/", "/user/authorization").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").permitAll()
-                .failureHandler(failureHandler)
-                .defaultSuccessUrl("/user")
-                .and()
-                .oauth2Login()
-                .userInfoEndpoint().oidcUserService(oidcUserService())
-                .and()
-                .defaultSuccessUrl("/user")
-                .and()
-                .authenticationManager(authenticationManager(managerBuilder))
-                .exceptionHandling().authenticationEntryPoint(entryPoint)
-                .and().csrf().disable();
+        http.authorizeHttpRequests(config -> config
+                        .anyRequest().authenticated())
+                .formLogin(config -> config.failureHandler(failureHandler))
+                .oauth2Login(config -> config
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
+                        .userInfoEndpoint(userInfoConfig -> userInfoConfig.oidcUserService(oidcUserService())));
+        http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(authenticationProvider())
+                .userDetailsService(userDetailsService);
         return http.build();
+//                .logout(config -> config
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/login.html"))
+//                .oauth2Login(config -> config
+//                        .userInfoEndpoint(
+//                                userInfoEndpointConfig -> userInfoEndpointConfig.oidcUserService(oidcUserService())));
     }
 
     private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-        OidcUserService service = new OidcUserService();
         return (userRequest) -> {
-            OidcUser user = service.loadUser(userRequest);
+            OidcUser user = userService.loadUser(userRequest);
             return new DefaultOidcUser(user.getAuthorities(), user.getIdToken(), user.getUserInfo());
         };
     }

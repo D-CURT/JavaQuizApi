@@ -21,7 +21,7 @@ import java.util.Optional;
  * Provides functionality to operate with a {@link User}.
  */
 @Slf4j
-@Service
+//@Service
 @RequiredArgsConstructor
 public class QuizUserService extends BaseMeService<User> implements UserService {
 

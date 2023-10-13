@@ -14,15 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Facade
 public class QuizUserFacade extends BaseMeFacade<User, UserDto> implements UserFacade {
-    public QuizUserFacade(UserService service, Mapper mapper) {
-        super(service, mapper);
+    public QuizUserFacade(Mapper mapper) {
+        super(null, mapper);
     }
 
     @Override
     public void create(UserDto dto) {
         log.info("Starting a new user authorization...");
         User user = mapper.map(dto, User.class);
-        service.create(user);
+//        service.create(user);
         mapper.map(user, dto);
         log.info("User authorization succeeded.");
     }

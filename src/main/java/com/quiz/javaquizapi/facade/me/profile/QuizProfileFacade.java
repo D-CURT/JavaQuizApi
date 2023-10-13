@@ -12,18 +12,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Facade
 public class QuizProfileFacade extends BaseMeFacade<Profile, ProfileDto> implements ProfileFacade {
-    private final UserService userService;
+//    private final UserService userService;
 
-    public QuizProfileFacade(MeService<Profile> service, Mapper mapper, UserService userService) {
+    public QuizProfileFacade(MeService<Profile> service, Mapper mapper) {
         super(service, mapper);
-        this.userService = userService;
     }
 
     @Override
     public void create(ProfileDto data) {
         log.info("Crating a new trainee profile...");
         Profile profile = mapper.map(data, Profile.class);
-        service.create(profile.setUser(userService.getMe(data.getUserCode())));
+//        service.create(profile.setUser(userService.getMe(data.getUserCode())));
         mapper.map(profile, data);
         log.info("Profile created successfully: tier - Trainee, score - 0.");
     }
