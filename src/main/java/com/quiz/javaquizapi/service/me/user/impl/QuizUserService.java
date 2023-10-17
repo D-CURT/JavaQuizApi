@@ -21,7 +21,7 @@ import java.util.Optional;
  * Provides functionality to operate with a {@link User}.
  */
 @Slf4j
-//@Service
+@Service
 @RequiredArgsConstructor
 public class QuizUserService extends BaseMeService<User> implements UserService {
 
@@ -59,5 +59,11 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
                 .ifPresentOrElse(
                         user::setDisplayName,
                         () -> user.setDisplayName(RandomStringUtils.random(10, true, true)));
+    }
+
+    @Override
+    public User update(User user) {
+        log.info("Updating user info...");
+        return repository.save(user);
     }
 }

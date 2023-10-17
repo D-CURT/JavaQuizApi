@@ -8,7 +8,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
@@ -29,7 +28,6 @@ import java.time.temporal.ChronoUnit;
 @PropertySource("classpath:application.yml")
 public class AuthorizationServerConfig {
 
-    private final PasswordEncoder passwordEncoder;
     private final AuthorizationServerProperties authorizationServerProperties;
 
     @Value("${spring.security.oauth2.token.access.time-to-live-in-min}")
@@ -57,7 +55,7 @@ public class AuthorizationServerConfig {
                         .withId("quiz-client-id")
                         .clientId("quiz-client-id")
                         .clientName("Quiz client")
-                        .clientSecret(passwordEncoder.encode("quiz-client-secret"))
+                        .clientSecret("$2a$10$EoCGdE6RIhd8HVZrKOawN.OGopIc6Sv1eblkqHd/rTeZonRATRt82")
                         .redirectUri("http://localhost:8080/code")
                         .scope("read.scope")
                         .scope("write.scope")

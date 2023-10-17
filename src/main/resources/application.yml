@@ -30,3 +30,19 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  liquibase:
+    enabled: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: decurt01@gmail.com
+    password: bjgtzmwosxpwfnjv
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+    test-connection: false

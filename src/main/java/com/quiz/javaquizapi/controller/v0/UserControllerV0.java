@@ -1,6 +1,7 @@
 package com.quiz.javaquizapi.controller.v0;
 
 import com.quiz.javaquizapi.controller.BaseMeController;
+import com.quiz.javaquizapi.dto.RestorePasswordDto;
 import com.quiz.javaquizapi.dto.UserDto;
 import com.quiz.javaquizapi.facade.me.user.UserFacade;
 import com.quiz.javaquizapi.model.http.Response;
@@ -9,11 +10,7 @@ import com.quiz.javaquizapi.service.response.ResponseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Provides all endpoints linked to the <strong>User</strong>.
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 public class UserControllerV0 extends BaseMeController<User, UserDto> {
+
     public UserControllerV0(ResponseService responseService, UserFacade facade) {
         super(responseService, facade);
     }
@@ -39,5 +37,17 @@ public class UserControllerV0 extends BaseMeController<User, UserDto> {
         return create(data);
     }
 
-    //TODO implement user archive
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/password_code")
+    public Response sendPasswordCode() {
+        ((UserFacade) getFacade()).sendPasswordCode(getCurrentUsername());
+        return getResponseService().build(null);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/restore_password", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response restorePassword(@RequestBody @Validated(RestorePasswordDto.RestorePassword.class) RestorePasswordDto data) {
+        UserDto userDto = ((UserFacade) getFacade()).restorePassword(getCurrentUsername(), data);
+        return getResponseService().build(userDto);
+    }
 }

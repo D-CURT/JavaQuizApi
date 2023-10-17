@@ -8,4 +8,5 @@ import com.quiz.javaquizapi.service.me.MeService;
  */
 public interface UserService extends MeService<User> {
 
+    User update(User user);
 }
