@@ -26,9 +26,9 @@ public class Profile extends BaseEntity {
     private Long score;
 
     /**
-     * A user self introduction.
+     * A user personal rate on the platform. A user reputation.
      */
-    private String info;
+    private Long rate;
 
     @Enumerated(EnumType.STRING)
     private Tiers tier;

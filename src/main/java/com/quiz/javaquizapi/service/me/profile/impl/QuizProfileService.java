@@ -39,6 +39,7 @@ public class QuizProfileService extends BaseMeService<Profile> implements Profil
         log.info("Applying TRAINEE tier for a new profile...");
         entity.setTier(Tiers.TRAINEE);
         entity.setScore(0L);
+        entity.setRate(0L);
         repository.save(entity);
     }
 }

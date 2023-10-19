@@ -28,8 +28,8 @@ import static org.mockito.Mockito.when;
 public class ProfileFacadeTests extends ApiIntegrationTests {
 
     private final Profile localProfile = new Profile()
-            .setInfo("someInfo")
             .setScore(123L)
+            .setRate(12000L)
             .setTier(Tiers.MIDDLE)
             .setUser(localUser);
 
@@ -59,8 +59,8 @@ public class ProfileFacadeTests extends ApiIntegrationTests {
         assertThat(me).isNotNull();
         assertThat(me.getTier()).isEqualTo(Tiers.MIDDLE);
         assertThat(me.getScore()).isEqualTo(localProfile.getScore());
+        assertThat(me.getRate()).isEqualTo(localProfile.getRate());
         assertThat(me.getCode()).isEqualTo(localProfile.getCode());
-        assertThat(me.getInfo()).isEqualTo(localProfile.getInfo());
         assertThat(me.getUserCode()).isEqualTo(localUser.getCode());
         verify(service).getMe(localUser.getUsername());
     }

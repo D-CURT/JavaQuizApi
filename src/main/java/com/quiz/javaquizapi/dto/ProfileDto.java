@@ -19,6 +19,7 @@ import lombok.experimental.Accessors;
 public class ProfileDto extends BaseDto {
     private Tiers tier;
     private long score;
+    private long rate;
     private String info;
     private String userCode;
 }

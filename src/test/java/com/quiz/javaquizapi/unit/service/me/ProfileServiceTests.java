@@ -32,8 +32,8 @@ import static org.mockito.Mockito.when;
 public class ProfileServiceTests extends ApiTests {
 
     private final Profile localProfile = new Profile()
-            .setInfo("someInfo")
             .setScore(123L)
+            .setRate(12_000L)
             .setTier(Tiers.MIDDLE)
             .setUser(localUser);
 
@@ -61,8 +61,8 @@ public class ProfileServiceTests extends ApiTests {
         assertThat(me.getUser()).isEqualTo(localUser);
         assertThat(me.getUser().getUsername()).isEqualTo(localUser.getUsername());
         assertThat(me.getCode()).isEqualTo(localProfile.getCode());
-        assertThat(me.getInfo()).isEqualTo(localProfile.getInfo());
         assertThat(me.getScore()).isEqualTo(localProfile.getScore());
+        assertThat(me.getRate()).isEqualTo(localProfile.getRate());
         assertThat(me.getTier()).isEqualTo(localProfile.getTier());
         verify(repository).findByUserUsername(localUser.getUsername());
         assertThat(captureLogs()).contains("Fetching a Profile by username...");
@@ -95,6 +95,7 @@ public class ProfileServiceTests extends ApiTests {
         assertThat(actual).isNotNull();
         assertThat(actual.getTier()).isEqualTo(Tiers.TRAINEE);
         assertThat(actual.getScore()).isEqualTo(0L);
+        assertThat(actual.getRate()).isEqualTo(0L);
         assertThat(actual.getCode()).isNotBlank();
         assertThat(captureLogs()).contains(
                 "Checking if profile for this user already was created...",
