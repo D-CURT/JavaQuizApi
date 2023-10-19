@@ -77,7 +77,7 @@ public class ProfileServiceTests extends ApiTests {
         assertThat(exception.getCode()).isEqualTo(ProfileNotFoundException.PROFILE_NOT_FOUND_CODE);
         assertThat(exception.getReason()).isEqualTo(ProfileNotFoundException.DEFAULT_ERROR);
         assertThat(exception.getArgs()).contains("Wrong username");
-        assertThat(exception.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         verify(repository).findByUserUsername("Wrong username");
         assertThat(captureLogs()).contains("Fetching a Profile by username...");
     }
@@ -110,7 +110,7 @@ public class ProfileServiceTests extends ApiTests {
                 Assertions.assertThrows(ProfileExistsException.class, () -> service.create(expected));
         assertThat(exception.getCode()).isEqualTo(ProfileExistsException.PROFILE_EXISTS_CODE);
         assertThat(exception.getArgs()).contains(localUser.getUsername());
-        assertThat(exception.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 
     @AfterEach

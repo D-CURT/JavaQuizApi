@@ -2,6 +2,7 @@ package com.quiz.javaquizapi.integration.dao;
 
 import com.quiz.javaquizapi.ApiTests;
 import com.quiz.javaquizapi.dao.BaseRepository;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import javax.persistence.EntityManagerFactory;
 import java.util.Optional;
 
 @DataJpaTest

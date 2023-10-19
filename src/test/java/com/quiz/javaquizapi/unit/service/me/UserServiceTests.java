@@ -55,7 +55,7 @@ public class UserServiceTests extends ApiTests {
                 () -> service.getMe("Wrong username"));
         assertThat(exception.getReason()).isEqualTo(UserNotFoundException.DEFAULT_ERROR);
         assertThat(exception.getArgs()).contains("Wrong username").hasSize(1);
-        assertThat(exception.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class UserServiceTests extends ApiTests {
         UserExistsException exception = Assertions.assertThrows(UserExistsException.class, () -> service.create(localUser));
         assertThat(exception.getReason()).isEqualTo("Unable to create a user, such username already exists");
         assertThat(exception.getArgs()).contains(localUser.getUsername()).hasSize(1);
-        assertThat(exception.getStatus()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         verify(repository).existsByUsername(localUser.getUsername());
     }
 
@@ -89,7 +89,7 @@ public class UserServiceTests extends ApiTests {
         assertThat(exception.getReason())
                 .isEqualTo("Unable to create a new user: provided code is malformed, check its format - UUID is required.");
         assertThat(exception.getArgs()).contains(localUser.getCode()).hasSize(1);
-        assertThat(exception.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
         verify(repository).existsByUsername(localUser.getUsername());
     }
 

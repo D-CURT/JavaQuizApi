@@ -4,13 +4,19 @@ import com.quiz.javaquizapi.dao.UserRepository;
 import com.quiz.javaquizapi.model.user.Providers;
 import com.quiz.javaquizapi.model.user.Roles;
 import com.quiz.javaquizapi.model.user.User;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -19,13 +25,13 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class QuizOAuth2LoginSuccessHandler implements ApplicationListener<AuthenticationSuccessEvent> {
+public class QuizOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
 
     @Override
-    public void onApplicationEvent(AuthenticationSuccessEvent event) {
-        Object principal = event.getAuthentication().getPrincipal();
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        Object principal = authentication.getPrincipal();
         if (principal instanceof DefaultOidcUser oidcUser) {
             userRepository.findByUsername(oidcUser.getEmail())
                     .ifPresentOrElse(
@@ -43,5 +49,6 @@ public class QuizOAuth2LoginSuccessHandler implements ApplicationListener<Authen
                                 log.debug("Username '{}' resolved", oidcUser.getEmail());
                             });
         }
+        super.onAuthenticationSuccess(request, response, authentication);
     }
 }

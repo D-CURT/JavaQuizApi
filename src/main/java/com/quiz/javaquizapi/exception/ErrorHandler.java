@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -57,7 +58,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 exception,
                 responseService.buildError(exception.getData(), exception.getGroup(), exception.getCode(), exception.getArgs()),
                 new HttpHeaders(),
-                exception.getStatus(),
+                exception.getStatusCode(),
                 request);
     }
 
@@ -73,7 +74,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @Override
     @SuppressWarnings("ALL")
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  HttpHeaders headers, HttpStatusCode status,
                                                                   WebRequest request) {
         FieldError fieldError = exception.getBindingResult().getFieldError();
         String defaultMessage = fieldError.getDefaultMessage();

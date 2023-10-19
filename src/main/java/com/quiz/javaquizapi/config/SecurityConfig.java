@@ -3,6 +3,7 @@ package com.quiz.javaquizapi.config;
 import com.quiz.javaquizapi.dao.UserRepository;
 import com.quiz.javaquizapi.service.security.QuizAuthenticationEntryPoint;
 import com.quiz.javaquizapi.service.security.QuizAuthenticationFailureHandler;
+import com.quiz.javaquizapi.service.security.QuizOAuth2LoginSuccessHandler;
 import com.quiz.javaquizapi.service.security.QuizUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,9 +32,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class SecurityConfig implements WebMvcConfigurer {
 
+    public static final String[] AUTH_WHITELIST = {
+            "/",
+            "/user/authorization"
+    };
+
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final QuizAuthenticationFailureHandler failureHandler;
+    private final QuizOAuth2LoginSuccessHandler successHandler;
     private final QuizAuthenticationEntryPoint entryPoint;
 
     @Bean
@@ -54,34 +62,27 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder) throws Exception {
-        builder.authenticationEventPublisher(new DefaultAuthenticationEventPublisher(eventPublisher));
-        return builder.build();
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder managerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        managerBuilder.userDetailsService(userDetailsService())
-                .passwordEncoder(passwordEncoder())
-                .and()
-                .authenticationProvider(authenticationProvider());
-        http.authorizeRequests()
-                .antMatchers("/", "/user/authorization").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").permitAll()
-                .failureHandler(failureHandler)
-                .defaultSuccessUrl("/user/me")
-                .and()
-                .oauth2Login()
-                .userInfoEndpoint().oidcUserService(oidcUserService())
-                .and()
-                .defaultSuccessUrl("/user/me")
-                .and()
-                .authenticationManager(authenticationManager(managerBuilder))
-                .exceptionHandling().authenticationEntryPoint(entryPoint)
-                .and().csrf().disable();
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(config -> config
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(config -> config
+                        .authenticationEntryPoint(entryPoint))
+                .formLogin(config -> config
+                        .loginPage("/login").permitAll()
+                        .failureHandler(failureHandler)
+                        .defaultSuccessUrl("/user/me"))
+                .oauth2Login(config -> config
+                        .successHandler(successHandler)
+                        .failureHandler(failureHandler)
+                        .defaultSuccessUrl("/user/me")
+                        .userInfoEndpoint(userInfoConfig -> userInfoConfig.oidcUserService(oidcUserService())));
+        http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationEventPublisher(new DefaultAuthenticationEventPublisher(eventPublisher))
+                .authenticationProvider(authenticationProvider())
+                .userDetailsService(userDetailsService())
+                .passwordEncoder(passwordEncoder());
         return http.build();
     }
 

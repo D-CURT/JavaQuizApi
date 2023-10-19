@@ -2,19 +2,12 @@ package com.quiz.javaquizapi.model.profile;
 
 import com.quiz.javaquizapi.model.BaseEntity;
 import com.quiz.javaquizapi.model.user.User;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
 /**
  * Contains a user personal details and the system statistics related to this profile.

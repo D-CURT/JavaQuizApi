@@ -7,8 +7,6 @@ import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
-
 @SuppressWarnings("all")
 @Getter(AccessLevel.PROTECTED)
 public abstract class MeDaoTests<R extends BaseRepository> extends DaoTests<R> {
