@@ -18,7 +18,12 @@ import java.util.UUID;
 @Slf4j
 @Getter
 public abstract class BaseQuizService<E extends BaseEntity> implements QuizService<E> {
+    public static final String CODE_ERROR_FORMAT = "Unable to create one %s: provided code is malformed, check its format - UUID is required. ";
     private final Class<E> entityType = GenericUtils.findFirstGeneric(getClass());
+
+    protected void setCodeIfValid(E entity) {
+        setCodeIfValid(entity, CODE_ERROR_FORMAT.formatted(entity.getClass().getSimpleName()));
+    }
 
     protected void setCodeIfValid(E entity, String errorMessage) {
         log.info("Resolving a new entity unique code...");

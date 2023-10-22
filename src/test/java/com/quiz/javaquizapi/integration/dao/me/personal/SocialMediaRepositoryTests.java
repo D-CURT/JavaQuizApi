@@ -56,4 +56,10 @@ public class SocialMediaRepositoryTests extends PersonalDaoTests<SocialMediaRepo
                     assertThat(medias.size()).isEqualTo(2);
                 }, () -> Assertions.fail("Social media not found"));
     }
+
+    @Test
+    @DisplayName("Check if a Social Media object exists in DB by its type")
+    public void testExistingSocialMediaByItsType() {
+        assertTrue(getRepository().existsByContactCodeAndType(testContact.getCode(), SocialType.INSTAGRAM));
+    }
 }

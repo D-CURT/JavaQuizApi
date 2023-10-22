@@ -25,6 +25,6 @@ public class QuizProfileFacade extends BaseMeFacade<Profile, ProfileDto> impleme
         Profile profile = mapper.map(data, Profile.class);
         service.create(profile.setUser(userService.getMe(data.getUserCode())));
         mapper.map(profile, data);
-        log.info("Profile created successfully: tier - Trainee, score - 0.");
+        log.info("Profile created successfully: tier - Trainee, score - 0, rate - 0.");
     }
 }

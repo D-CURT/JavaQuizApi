@@ -74,7 +74,7 @@ public class ProfileFacadeTests extends ApiIntegrationTests {
         assertThat(dto.getUserCode()).isEqualTo(localUser.getCode());
         assertThat(captureLogs()).contains(
                 "Crating a new trainee profile...",
-                "Profile created successfully: tier - Trainee, score - 0.");
+                "Profile created successfully: tier - Trainee, score - 0, rate - 0.");
     }
 
     @AfterEach
