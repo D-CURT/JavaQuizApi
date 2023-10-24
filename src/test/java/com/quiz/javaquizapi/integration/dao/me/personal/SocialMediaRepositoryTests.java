@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Social media DAO tests")
 public class SocialMediaRepositoryTests extends PersonalDaoTests<SocialMediaRepository> {
-
     @Autowired
     private ContactRepository contactRepository;
     private Contact testContact;

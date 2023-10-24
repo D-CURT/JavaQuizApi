@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
  * Thrown by the Quiz API when a user contacts weren't found.
  */
 public class ContactNotFoundException extends PersonalInfoException {
-
     /**
      * This constant provides an error code for the case when a user contacts not found.
      * <p>The property key is - '<strong>api.errorCode.114</strong>'.

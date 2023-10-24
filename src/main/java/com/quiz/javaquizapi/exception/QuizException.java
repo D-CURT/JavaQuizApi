@@ -11,7 +11,6 @@ import static com.quiz.javaquizapi.model.http.CommonErrors.INCORRECT_INPUT_CODE;
  */
 @Getter
 public class QuizException extends ResponseStatusException {
-
     public static final String DEFAULT_GROUP = "api";
 
     private final int code;

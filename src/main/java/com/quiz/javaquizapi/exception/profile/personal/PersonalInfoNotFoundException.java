@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
  * Thrown by the Quiz API when a personal info object wasn't found.
  */
 public class PersonalInfoNotFoundException extends QuizException {
-
     /**
      * This constant provides an error code for the case when a profile not found.
      * <p>The property key is - '<strong>api.errorCode.111</strong>'.

@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("User DAO tests")
 public class UserTests extends MeDaoTests<UserRepository> {
-
     @Test
     @DisplayName("Fetch an existing user by its username")
     public void testFetchingExistingUserByUsername() {

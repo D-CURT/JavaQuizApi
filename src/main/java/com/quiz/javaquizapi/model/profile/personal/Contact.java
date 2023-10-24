@@ -15,7 +15,6 @@ import lombok.experimental.Accessors;
 @Table(name = "contacts")
 @SequenceGenerator(name = "id_gen", sequenceName = "contact_sec", allocationSize = 5)
 public class Contact extends BaseEntity {
-
     private String email;
     private String phone;
 

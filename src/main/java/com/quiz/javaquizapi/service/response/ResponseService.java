@@ -6,7 +6,6 @@ import com.quiz.javaquizapi.model.http.Response;
  * Provides functionality to create the Quiz API {@link Response}.
  */
 public interface ResponseService {
-
     /**
      * This constant contains a prefix to build an error message key.
      */

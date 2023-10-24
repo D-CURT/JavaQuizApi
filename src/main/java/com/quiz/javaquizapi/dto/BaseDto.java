@@ -7,13 +7,12 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * Contains common fields for all of the DTOs.
+ * Contains common fields for all the DTOs.
  */
 @Getter
 @Setter
 @Accessors
 public abstract class BaseDto implements Serializable {
-
     /**
      * Value is unique. Use this one to find an entity in our database.
      * <p>If a value is provided - it will be saved in the database while entity creation,

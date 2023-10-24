@@ -1,6 +1,7 @@
 package com.quiz.javaquizapi.service.me.profile.impl.personal;
 
 import com.quiz.javaquizapi.dao.AddressRepository;
+import com.quiz.javaquizapi.exception.profile.personal.AddressNotFoundException;
 import com.quiz.javaquizapi.model.profile.personal.Address;
 import com.quiz.javaquizapi.service.BaseQuizService;
 import com.quiz.javaquizapi.service.me.profile.AddressService;
@@ -18,8 +19,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class QuizAddressService extends BaseQuizService<Address> implements AddressService {
-
     private final AddressRepository repository;
+
+    @Override
+    public Address get(String code) {
+        logFetchingEntity();
+        return repository.findByCode(code).orElseThrow(AddressNotFoundException::new);
+    }
 
     @Override
     public void create(Address entity) {
@@ -29,12 +35,7 @@ public class QuizAddressService extends BaseQuizService<Address> implements Addr
 
     @Override
     public List<Address> getByPersonalInfoCode(String code) {
+        logFetchingByField("info code");
         return repository.findByInfoCode(code).orElse(Collections.emptyList());
-    }
-
-    @Override
-    public Address getByCode(String code) {
-        return repository.findByCode(code)
-                .orElseThrow();
     }
 }

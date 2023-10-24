@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 @DisplayName("Personal Info DAO tests")
 public class PersonalInfoTests extends PersonalDaoTests<PersonalInfoRepository> {
-
     @Test
     @DisplayName("Fetch an existing personal info by existing profile code")
     public void testFetchingExistingPersonalInfo() {

@@ -13,8 +13,9 @@ import java.util.function.Function;
  */
 @Slf4j
 public abstract class BaseMeService<E extends BaseEntity> extends BaseQuizService<E> implements MeService<E> {
-    protected E getMe(String username, Function<String, E> producer) {
-        log.info("Fetching a {} by username...", getEntityType().getSimpleName());
-        return producer.apply(username);
+    protected static final String USER_IDENTIFIER = "username";
+    @Override
+    protected void logFetchingEntity() {
+        logFetchingByField(USER_IDENTIFIER);
     }
 }

@@ -15,7 +15,6 @@ import lombok.experimental.Accessors;
 @Table(name = "addresses")
 @SequenceGenerator(name = "id_gen", sequenceName = "address_sec", allocationSize = 5)
 public class Address extends BaseEntity {
-
     private String street;
     private String postalCode;
     private String city;

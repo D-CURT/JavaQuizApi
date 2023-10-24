@@ -15,7 +15,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
         classes = {JavaQuizApiApplication.class, QuizModelMapper.class},
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RandomPortTests extends ApiTests {
-
     public static final String LOCAL_URL = "http://localhost:%s/%s";
     protected final ObjectMapper objectMapper = new ObjectMapper();
     protected final TestRestTemplate template = new TestRestTemplate();

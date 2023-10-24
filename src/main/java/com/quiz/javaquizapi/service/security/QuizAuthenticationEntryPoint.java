@@ -22,7 +22,6 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class QuizAuthenticationEntryPoint implements AuthenticationEntryPoint, AccessDeniedHandler {
-
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private final ResponseService responseService;
 

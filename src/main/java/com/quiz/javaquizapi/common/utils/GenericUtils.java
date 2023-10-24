@@ -6,7 +6,6 @@ import java.lang.reflect.ParameterizedType;
  * Provides utility methods to operate with generics.
  */
 public final class GenericUtils {
-
     /**
      * Search for the first generic type of the accepted object type.
      *

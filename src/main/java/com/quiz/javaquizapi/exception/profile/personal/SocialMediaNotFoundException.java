@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
  * Thrown by the Quiz API when a social media object wasn't found.
  */
 public class SocialMediaNotFoundException extends PersonalInfoException {
-
     /**
      * This constant provides an error code for the case when a user social media not found.
      * <p>The property key is - '<strong>api.errorCode.115</strong>'.

@@ -18,7 +18,6 @@ import com.quiz.javaquizapi.model.http.Response;
 @Service
 @RequiredArgsConstructor
 public class QuizResponseService implements ResponseService {
-
     private final MessageSource msgSource;
 
     @Override

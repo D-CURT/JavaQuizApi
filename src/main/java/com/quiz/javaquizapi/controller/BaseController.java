@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 @Getter
 @RequiredArgsConstructor
 public abstract class BaseController<D extends BaseDto> {
-
     private final ResponseService responseService;
     private final QuizFacade<D> facade;
 

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("all")
 @Getter(AccessLevel.PROTECTED)
 public abstract class MeDaoTests<R extends BaseRepository> extends DaoTests<R> {
-
     @Autowired
     private UserRepository userRepository;
 

@@ -10,7 +10,6 @@ import java.util.List;
  * Provides functionality to operate with a user social media objects {@link SocialMedia}.
  */
 public interface SocialMediaService extends QuizService<SocialMedia> {
-
     List<SocialMedia> getByContactCode(String contactCode);
 
     boolean existByContactCodeAndType(String contactCode, SocialType type);

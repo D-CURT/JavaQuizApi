@@ -17,7 +17,6 @@ import java.util.UUID;
 @Transactional
 @Getter(AccessLevel.PROTECTED)
 public abstract class PersonalDaoTests<R extends BaseRepository> extends MeDaoTests<R> {
-
     protected static final String PROFILE_CODE = UUID.randomUUID().toString();
     protected static final String INFO_CODE = UUID.randomUUID().toString();
 

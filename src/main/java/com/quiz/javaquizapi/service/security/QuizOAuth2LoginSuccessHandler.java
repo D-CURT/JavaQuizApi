@@ -26,7 +26,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class QuizOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
     private final UserRepository userRepository;
 
     @Override

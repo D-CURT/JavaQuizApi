@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @DisplayName("Profile DAO tests")
 public class ProfileTests extends MeDaoTests<ProfileRepository> {
-
     private Profile testProfile;
 
     @BeforeEach

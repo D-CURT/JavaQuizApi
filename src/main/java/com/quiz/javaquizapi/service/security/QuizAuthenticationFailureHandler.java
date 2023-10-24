@@ -20,7 +20,6 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class QuizAuthenticationFailureHandler implements AuthenticationFailureHandler {
-
     private final ObjectMapper mapper;
     private final ResponseService responseService;
 

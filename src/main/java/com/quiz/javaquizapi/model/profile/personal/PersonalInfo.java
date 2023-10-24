@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @Table(name = "personal_infos")
 @SequenceGenerator(name = "id_gen", sequenceName = "personal_sec", allocationSize = 5)
 public class PersonalInfo extends BaseEntity {
-
     private String bio;
 
     @ToString.Exclude

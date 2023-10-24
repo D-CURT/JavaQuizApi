@@ -20,7 +20,6 @@ import lombok.experimental.Accessors;
         name = "users",
         uniqueConstraints = @UniqueConstraint(name = "UniqueNumberAndStatus", columnNames = { "username", "enabled" }))
 public class User extends BaseEntity {
-
     @NotNull
     private String username;
 

@@ -9,6 +9,14 @@ import com.quiz.javaquizapi.model.BaseEntity;
  */
 public interface QuizService<E extends BaseEntity> {
     /**
+     * Fetches a generic entity its code.
+     *
+     * @param code the entity code.
+     * @return requested entity.
+     */
+    E get(String code);
+
+    /**
      * Creates a new entity.
      *
      * @param entity entity to save in the system.

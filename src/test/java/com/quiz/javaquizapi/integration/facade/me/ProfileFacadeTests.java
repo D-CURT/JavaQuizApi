@@ -5,12 +5,10 @@ import com.quiz.javaquizapi.dto.ProfileDto;
 import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.profile.ProfileFacade;
 import com.quiz.javaquizapi.facade.me.profile.QuizProfileFacade;
-import com.quiz.javaquizapi.integration.ApiIntegrationTests;
 import com.quiz.javaquizapi.model.profile.Profile;
 import com.quiz.javaquizapi.model.profile.Tiers;
 import com.quiz.javaquizapi.service.me.profile.ProfileService;
 import com.quiz.javaquizapi.service.me.user.UserService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +23,7 @@ import static org.mockito.Mockito.when;
 
 @SuppressWarnings("ALL")
 @DisplayName("Profile facade tests")
-public class ProfileFacadeTests extends ApiIntegrationTests {
-
+public class ProfileFacadeTests extends ProfileTests {
     private final Profile localProfile = new Profile()
             .setScore(123L)
             .setRate(12000L)
@@ -45,9 +42,10 @@ public class ProfileFacadeTests extends ApiIntegrationTests {
     private Mapper mapper;
     private ProfileFacade facade;
 
+    @Override
     @BeforeEach
     void setUp() {
-        initLog();
+        super.setUp();
         facade = new QuizProfileFacade(service, mapper, userService);
     }
 
@@ -69,16 +67,12 @@ public class ProfileFacadeTests extends ApiIntegrationTests {
     @DisplayName("Create profile")
     public void testCreationProfile() {
         when(userService.getMe(localUser.getUsername())).thenReturn(localUser);
-        ProfileDto dto = new ProfileDto().setUserCode(localUser.getUsername());
+        var dto = new ProfileDto();
+        dto.setUsername(localUser.getUsername());
         facade.create(dto);
-        assertThat(dto.getUserCode()).isEqualTo(localUser.getCode());
+        verify(userService).getMe(localUser.getUsername());
         assertThat(captureLogs()).contains(
                 "Crating a new trainee profile...",
                 "Profile created successfully: tier - Trainee, score - 0, rate - 0.");
-    }
-
-    @AfterEach
-    void tearDown() {
-        clearLog();
     }
 }

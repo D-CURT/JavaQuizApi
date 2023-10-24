@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @DisplayName("Spring context tests")
 class JavaQuizApiApplicationTests {
-
     @Test
     @DisplayName("Context loads")
     void contextLoads() {

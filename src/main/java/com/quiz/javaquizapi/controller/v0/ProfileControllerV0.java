@@ -31,6 +31,6 @@ public class ProfileControllerV0 extends BaseMeController<Profile, ProfileDto> {
      */
     @PostMapping(value = StringUtils.EMPTY, produces = MediaType.APPLICATION_JSON_VALUE)
     public Response create() {
-        return create(new ProfileDto().setUserCode(getCurrentUsername()));
+        return create(createMeDto(ProfileDto.class));
     }
 }

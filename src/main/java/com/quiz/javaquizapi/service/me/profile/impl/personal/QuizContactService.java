@@ -14,8 +14,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class QuizContactService extends BaseQuizService<Contact> implements ContactService {
-
     private final ContactRepository repository;
+
+    @Override
+    public Contact get(String code) {
+        logFetchingEntity();
+        return repository.findByCode(code).orElseThrow(ContactNotFoundException::new);
+    }
 
     @Override
     public void create(Contact entity) {

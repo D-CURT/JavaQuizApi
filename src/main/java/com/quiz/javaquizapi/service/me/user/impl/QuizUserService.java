@@ -24,14 +24,20 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class QuizUserService extends BaseMeService<User> implements UserService {
-
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public User getMe(String username) {
-        return getMe(username,
-                name -> repository.findByUsername(name).orElseThrow(() -> new UserNotFoundException(name)));
+        logFetchingEntity();
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+    }
+
+    @Override
+    public User get(String code) {
+        logFetchingByField(ENTITY_IDENTIFIER);
+        return repository.findByCode(code).orElseThrow(UserNotFoundException::new);
     }
 
     @Override

@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 @DisplayName("User service tests")
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests extends ApiTests {
-
     @Mock
     private UserRepository repository;
 
@@ -50,9 +49,8 @@ public class UserServiceTests extends ApiTests {
     @Test
     @DisplayName("Fetch me by incorrect username")
     public void testFetchingMeGivenIncorrectUsernameThenThrowUserNotFoundException() {
-        UserNotFoundException exception = Assertions.assertThrows(
-                UserNotFoundException.class,
-                () -> service.getMe("Wrong username"));
+        var exception =
+                Assertions.assertThrows(UserNotFoundException.class, () -> service.getMe("Wrong username"));
         assertThat(exception.getReason()).isEqualTo(UserNotFoundException.DEFAULT_ERROR);
         assertThat(exception.getArgs()).contains("Wrong username").hasSize(1);
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -67,6 +65,26 @@ public class UserServiceTests extends ApiTests {
         assertThat(me.getUsername()).isEqualTo(localUser.getUsername());
         verify(repository).findByUsername(localUser.getUsername());
         assertThat(captureLogs()).contains("Fetching a User by username...");
+    }
+
+    @Test
+    @DisplayName("Fetch user by incorrect code")
+    public void testFetchingUserByIncorrectCodeThenThrowUserNotFoundException() {
+        var exception = Assertions.assertThrows(UserNotFoundException.class, () -> service.get("Wrong code"));
+        assertThat(exception.getReason()).isEqualTo(UserNotFoundException.DEFAULT_ERROR);
+        assertThat(exception.getArgs()).hasSize(0);
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("Fetch user by code")
+    public void testFetchingUserGivenValidCode() {
+        when(repository.findByCode(localUser.getCode())).thenReturn(Optional.of(localUser));
+        User user = service.get(localUser.getCode());
+        assertThat(user).isNotNull();
+        assertThat(user.getCode()).isEqualTo(localUser.getCode());
+        verify(repository).findByCode(localUser.getCode());
+        assertThat(captureLogs()).contains("Fetching a User by code...");
     }
 
     @Test
@@ -85,9 +103,10 @@ public class UserServiceTests extends ApiTests {
     public void testCreateUserGivenInvalidCode() {
         localUser.setCode("Wrong code");
         when(repository.existsByUsername(localUser.getUsername())).thenReturn(Boolean.FALSE);
-        ValidationException exception = Assertions.assertThrows(ValidationException.class, () -> service.create(localUser));
+        var exception = Assertions.assertThrows(ValidationException.class, () -> service.create(localUser));
         assertThat(exception.getReason())
-                .isEqualTo("Unable to create a new user: provided code is malformed, check its format - UUID is required.");
+                .isEqualTo("Unable to create a new user: provided code is malformed," +
+                        " check its format - UUID is required.");
         assertThat(exception.getArgs()).contains(localUser.getCode()).hasSize(1);
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
         verify(repository).existsByUsername(localUser.getUsername());
@@ -96,11 +115,11 @@ public class UserServiceTests extends ApiTests {
     @Test
     @DisplayName("Create a new user - all properties are preset")
     public void testCreateUserGivenAllPropertiesPreset() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        var encoder = new BCryptPasswordEncoder();
         String encodedPassword = encoder.encode(localUser.getPassword());
         when(passwordEncoder.encode(localUser.getPassword()))
                 .thenReturn(encodedPassword);
-        User user = createUser();
+        var user = createUser();
         assertThat(user).isNotNull();
         assertThat(encoder.matches("password", user.getPassword())).isTrue();
         assertThat(user.getDisplayName()).isEqualTo("displayName");
@@ -117,7 +136,7 @@ public class UserServiceTests extends ApiTests {
     @DisplayName("Create a new user - display name is null")
     public void testCreateUserGivenNullDisplayName() {
         localUser.setDisplayName(null);
-        User user = createUser();
+        var user = createUser();
         assertThat(user).isNotNull();
         assertThat(user.getDisplayName()).doesNotContain("displayName").hasSize(10);
     }
@@ -126,7 +145,7 @@ public class UserServiceTests extends ApiTests {
     @DisplayName("Create a new user - display name is empty")
     public void testCreateUserGivenEmptyDisplayName() {
         localUser.setDisplayName(StringUtils.EMPTY);
-        User user = createUser();
+        var user = createUser();
         assertThat(user).isNotNull();
         assertThat(user.getDisplayName()).doesNotContain("displayName").hasSize(10);
     }
@@ -140,7 +159,7 @@ public class UserServiceTests extends ApiTests {
         when(repository.existsByUsername(localUser.getUsername())).thenReturn(Boolean.FALSE);
         when(repository.save(any(User.class))).thenReturn(localUser);
         service.create(localUser);
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        var userCaptor = ArgumentCaptor.forClass(User.class);
         verify(repository).existsByUsername(localUser.getUsername());
         verify(repository).save(userCaptor.capture());
         return userCaptor.getValue();

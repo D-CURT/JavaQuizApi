@@ -23,7 +23,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ErrorHandler extends ResponseEntityExceptionHandler {
-
     private final ResponseService responseService;
 
     /**

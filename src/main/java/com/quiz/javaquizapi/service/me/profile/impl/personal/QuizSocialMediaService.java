@@ -20,8 +20,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class QuizSocialMediaService extends BaseQuizService<SocialMedia> implements SocialMediaService {
-
     private final SocialMediaRepository repository;
+
+    @Override
+    public SocialMedia get(String code) {
+        logFetchingEntity();
+        return repository.findByCode(code).orElseThrow(SocialMediaNotFoundException::new);
+    }
 
     @Override
     public void create(SocialMedia entity) {
@@ -35,12 +40,14 @@ public class QuizSocialMediaService extends BaseQuizService<SocialMedia> impleme
 
     @Override
     public List<SocialMedia> getByContactCode(String contactCode) {
+        logFetchingByField("contact code");
         return repository.findByContactCode(contactCode)
                 .orElseThrow(SocialMediaNotFoundException::new);
     }
 
     @Override
     public boolean existByContactCodeAndType(String contactCode, SocialType type) {
+        logFetchingByField("contact code and type");
         return repository.existsByContactCodeAndType(contactCode, type);
     }
 }

@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Address DAO tests")
 public class AddressRepositoryTests extends PersonalDaoTests<AddressRepository> {
-
     @Override
     @BeforeEach
     void setUp() {

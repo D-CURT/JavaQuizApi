@@ -24,8 +24,15 @@ public class QuizProfileService extends BaseMeService<Profile> implements Profil
 
     @Override
     public Profile getMe(String username) {
-        return getMe(username, (name) -> repository.findByUserUsername(name)
-                .orElseThrow(() -> new ProfileNotFoundException(name)));
+        logFetchingEntity();
+        return repository.findByUserUsername(username)
+                .orElseThrow(() -> new ProfileNotFoundException(username));
+    }
+
+    @Override
+    public Profile get(String code) {
+        logFetchingByField(ENTITY_IDENTIFIER);
+        return repository.findByCode(code).orElseThrow(ProfileNotFoundException::new);
     }
 
     @Override

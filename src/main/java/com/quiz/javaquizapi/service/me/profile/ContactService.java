@@ -7,7 +7,6 @@ import com.quiz.javaquizapi.service.QuizService;
  * Provides functionality to operate with a user contacts {@link Contact}.
  */
 public interface ContactService extends QuizService<Contact> {
-
     Contact getByPersonalInfoCode(String code);
 
     boolean existsByPersonalInfoCode(String code);

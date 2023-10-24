@@ -30,7 +30,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig implements WebMvcConfigurer {
-
     public static final String[] AUTH_WHITELIST = {
             "/",
             "/user/authorization"

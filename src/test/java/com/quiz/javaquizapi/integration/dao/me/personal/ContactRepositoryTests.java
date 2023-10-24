@@ -13,7 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Contact DAO tests")
 public class ContactRepositoryTests extends PersonalDaoTests<ContactRepository> {
-
     private Contact testContact;
 
     @Override

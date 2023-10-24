@@ -13,7 +13,6 @@ import java.util.UUID;
 
 @Getter(AccessLevel.PROTECTED)
 public class ApiTests {
-
     private final OutputStream out = new ByteArrayOutputStream();
     private final OutputStream standardOut = System.out;
 

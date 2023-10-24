@@ -13,7 +13,6 @@ import java.util.Optional;
  */
 @NoRepositoryBean
 public interface BaseRepository<E extends BaseEntity> extends CrudRepository<E, Long> {
-
     Optional<E> findByCode(String code);
 
     boolean existsByCode(String code);

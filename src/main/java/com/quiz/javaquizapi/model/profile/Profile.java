@@ -19,7 +19,6 @@ import lombok.experimental.Accessors;
 @Table(name = "profiles")
 @SequenceGenerator(name = "id_gen", sequenceName = "profile_seq", allocationSize = 5)
 public class Profile extends BaseEntity {
-
     /**
      * A user score. Scores can be used to accede to new knowledge.
      */

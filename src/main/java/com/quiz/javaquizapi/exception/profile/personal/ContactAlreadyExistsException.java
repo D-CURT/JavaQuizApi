@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
  * Thrown by the Quiz API when contacts of a user were already created.
  */
 public class ContactAlreadyExistsException extends PersonalInfoException {
-
     /**
      * This constant provides an error code for the case when a user contacts already exist.
      * <p>The property key is - '<strong>api.errorCode.113</strong>'.

@@ -42,7 +42,7 @@ public class UserFacadeTests extends ApiIntegrationTests {
         when(service.getMe(localUser.getUsername())).thenReturn(localUser);
         UserDto me = facade.getMe(localUser.getUsername());
         assertThat(me).isNotNull();
-        assertThat(me.getUsername()).isEqualTo(localUser.getUsername());
+        assertThat(me.getUsername()).isNull();
         assertThat(me.getPassword()).isNull();
         assertThat(me.getDisplayName()).isEqualTo(localUser.getDisplayName());
         assertThat(me.getCode()).isEqualTo(localUser.getCode());
@@ -53,10 +53,12 @@ public class UserFacadeTests extends ApiIntegrationTests {
     @DisplayName("Create user")
     public void testCreationMe() {
         doNothing().when(service).create(any(User.class));
-        facade.create(new UserDto().setUsername(localUser.getUsername()).setPassword(localUser.getPassword()));
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        var dto = new UserDto();
+        dto.setUsername(localUser.getUsername());
+        facade.create(dto.setPassword(localUser.getPassword()));
+        var userCaptor = ArgumentCaptor.forClass(User.class);
         verify(service).create(userCaptor.capture());
-        User user = userCaptor.getValue();
+        var user = userCaptor.getValue();
         assertThat(user).isNotNull();
         assertThat(user.getUsername()).isEqualTo(localUser.getUsername());
         assertThat(user.getPassword()).isEqualTo(localUser.getPassword());

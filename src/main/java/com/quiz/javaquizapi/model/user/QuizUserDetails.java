@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
  * Provides functionality to operate with security user details.
  */
 public record QuizUserDetails(User user) implements UserDetails {
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));

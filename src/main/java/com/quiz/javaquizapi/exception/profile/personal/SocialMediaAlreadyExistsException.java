@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
  * Thrown by the Quiz API when a social media object was already created.
  */
 public class SocialMediaAlreadyExistsException extends PersonalInfoException {
-
     /**
      * This constant provides an error code for the case when a user social media already exist.
      * <p>The property key is - '<strong>api.errorCode.114</strong>'.

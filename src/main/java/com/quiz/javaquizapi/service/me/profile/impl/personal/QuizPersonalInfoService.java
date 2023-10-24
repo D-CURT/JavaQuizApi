@@ -19,24 +19,27 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class QuizPersonalInfoService extends BaseMeService<PersonalInfo> implements PersonalInfoService {
-
     private final ProfileService profileService;
     private final PersonalInfoRepository repository;
 
     @Override
     public PersonalInfo getMe(String username) {
-        return getMe(username, name -> {
-            Profile me = profileService.getMe(name);
-            return repository.findByProfileCode(me.getCode())
-                    .orElseThrow(() -> new PersonalInfoNotFoundException(username));
-        });
+        logFetchingEntity();
+        Profile me = profileService.getMe(username);
+        return repository.findByProfileCode(me.getCode())
+                .orElseThrow(() -> new PersonalInfoNotFoundException(username));
+    }
+
+    @Override
+    public PersonalInfo get(String code) {
+        logFetchingByField(ENTITY_IDENTIFIER);
+        return repository.findByCode(code).orElseThrow(PersonalInfoNotFoundException::new);
     }
 
     @Override
     public void create(PersonalInfo entity) {
-        log.info("Checking if personal info of the user already was created...");
         Profile me = profileService.getMe(entity.getProfile().getUser().getUsername());
-        if (repository.existsByProfileCode(me.getCode())) {
+        if (existsByProfileCode(me.getCode())) {
             throw new PersonalInfoExistsException(me.getUser().getUsername());
         }
         log.info("Saving a personal info...");
@@ -46,18 +49,14 @@ public class QuizPersonalInfoService extends BaseMeService<PersonalInfo> impleme
 
     @Override
     public PersonalInfo getPersonalInfoByProfileCode(String profileCode) {
+        logFetchingByField("profile code");
         return repository.findByProfileCode(profileCode)
                 .orElseThrow(PersonalInfoNotFoundException::new);
     }
 
     @Override
-    public PersonalInfo getPersonalInfo(String code) {
-        return repository.findByCode(code)
-                .orElseThrow(PersonalInfoNotFoundException::new);
-    }
-
-    @Override
     public boolean existsByProfileCode(String profileCode) {
+        log.info("Checking if personal info of the user already was created...");
         return repository.existsByProfileCode(profileCode);
     }
 }

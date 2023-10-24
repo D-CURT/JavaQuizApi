@@ -15,7 +15,6 @@ import lombok.experimental.Accessors;
 @Table(name = "social_medias")
 @SequenceGenerator(name = "id_gen", sequenceName = "social_sec", allocationSize = 5)
 public class SocialMedia extends BaseEntity {
-
     private String accountName;
     private String link;
 

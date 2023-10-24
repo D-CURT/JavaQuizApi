@@ -22,7 +22,6 @@ import java.util.Optional;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public abstract class DaoTests<R extends BaseRepository> extends ApiTests {
-
     protected static final String EXECUTED_QUERIES_MESSAGE = "Expected number of executed queries should be equal to %s";
 
     private Statistics statistics;
