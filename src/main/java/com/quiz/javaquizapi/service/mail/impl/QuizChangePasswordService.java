@@ -9,12 +9,14 @@ import com.quiz.javaquizapi.service.me.user.PasswordCodeService;
 import com.quiz.javaquizapi.service.me.user.UserService;
 import com.quiz.javaquizapi.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class QuizChangePasswordService implements ChangePasswordService {
@@ -40,6 +42,7 @@ public class QuizChangePasswordService implements ChangePasswordService {
 
     @Override
     public void sendCode(String toEmail) {
+        log.info("Preparing an email message to send...");
         var message = new SimpleMailMessage();
         message.setTo(toEmail);
         message.setSubject(ResponseService.getMessage(msgSource, CHANGE_PASS_SUBJECT));
@@ -59,6 +62,7 @@ public class QuizChangePasswordService implements ChangePasswordService {
         }
         User user = userService.getMe(code.getUser().getUsername());
         user.setPassword(passwordEncoder.encode(code.getPassword()));
+        log.info("Saving a new password...");
         userService.update(user);
     }
 }

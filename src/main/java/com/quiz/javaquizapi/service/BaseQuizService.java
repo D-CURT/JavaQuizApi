@@ -18,7 +18,7 @@ import java.util.UUID;
 @Slf4j
 @Getter
 public abstract class BaseQuizService<E extends BaseEntity> implements QuizService<E> {
-    public static final String CODE_ERROR_FORMAT = "Unable to create one %s: provided code is malformed, check its format - UUID is required. ";
+    public static final String CODE_ERROR_FORMAT = "Unable to create one %s: provided code is malformed, check its format - UUID is required.";
     protected static final String ENTITY_IDENTIFIER = "code";
     private final Class<E> entityType = GenericUtils.findFirstGeneric(getClass());
 

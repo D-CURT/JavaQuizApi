@@ -20,7 +20,7 @@ public class ApiTests {
 
     {
         localUser = new User()
-                .setUsername("username")
+                .setUsername("username@mail.com")
                 .setPassword("password")
                 .setDisplayName("displayName")
                 .setRole(Roles.USER)

@@ -105,7 +105,7 @@ public class UserServiceTests extends ApiTests {
         when(repository.existsByUsername(localUser.getUsername())).thenReturn(Boolean.FALSE);
         var exception = Assertions.assertThrows(ValidationException.class, () -> service.create(localUser));
         assertThat(exception.getReason())
-                .isEqualTo("Unable to create a new user: provided code is malformed," +
+                .isEqualTo("Unable to create one User: provided code is malformed," +
                         " check its format - UUID is required.");
         assertThat(exception.getArgs()).contains(localUser.getCode()).hasSize(1);
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);

@@ -32,6 +32,7 @@ public class QuizPasswordCodeService extends BaseMeService<PasswordCode> impleme
     @Override
     public void create(PasswordCode entity) {
         setCodeIfValid(entity);
+        log.info("Saving a password code...");
         repository.save(entity);
     }
 
@@ -44,11 +45,12 @@ public class QuizPasswordCodeService extends BaseMeService<PasswordCode> impleme
 
     @Override
     public boolean isValid(PasswordCode code) {
+        log.info("Validating password code...");
         return repository.findTopByUserUsername(code.getUser().getUsername())
                 .filter(pass -> StringUtils.equals(code.getPasswordCode(), pass.getPasswordCode()))
                 .map(pass -> pass
                         .getCreatedAt()
-                        .isBefore(LocalDateTime.now().minusMinutes(PASSWORD_CODE_EXPIRATION_TIME_IN_MINUTES)))
+                        .isAfter(LocalDateTime.now().minusMinutes(PASSWORD_CODE_EXPIRATION_TIME_IN_MINUTES)))
                 .orElseThrow(() -> new PasswordCodeNotFoundException(code.getUser().getUsername()));
     }
 }
