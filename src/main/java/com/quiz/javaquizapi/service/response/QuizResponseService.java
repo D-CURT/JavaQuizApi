@@ -1,16 +1,14 @@
 package com.quiz.javaquizapi.service.response;
 
-import java.util.Optional;
-
 import com.google.common.base.CaseFormat;
+import com.quiz.javaquizapi.model.http.Error;
+import com.quiz.javaquizapi.model.http.Response;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.quiz.javaquizapi.model.http.Error;
-import com.quiz.javaquizapi.model.http.Response;
+import java.util.Optional;
 
 /**
  * Provides functionality to create the Quiz API {@link Response}.
@@ -38,7 +36,7 @@ public class QuizResponseService implements ResponseService {
                 .map(error -> new Error(
                         key,
                         CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_UNDERSCORE, group),
-                        msgSource.getMessage(key, args, LocaleContextHolder.getLocale()))
+                        ResponseService.getMessage(msgSource, key, args))
                 ).ifPresent(response::setError);
         return response;
     }

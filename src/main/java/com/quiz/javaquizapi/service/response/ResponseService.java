@@ -1,6 +1,8 @@
 package com.quiz.javaquizapi.service.response;
 
 import com.quiz.javaquizapi.model.http.Response;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * Provides functionality to create the Quiz API {@link Response}.
@@ -42,4 +44,12 @@ public interface ResponseService {
      * @return created Response.
      */
     Response buildError(Object data, String group, Integer errorCode, String... args);
+
+    static String getMessage(MessageSource msgSource, int code, String... args) {
+        return getMessage(msgSource, API_ERROR_CODE_PREFIX + code, args);
+    }
+
+    static String getMessage(MessageSource msgSource, String key, String... args) {
+        return msgSource.getMessage(key, args, LocaleContextHolder.getLocale());
+    }
 }
