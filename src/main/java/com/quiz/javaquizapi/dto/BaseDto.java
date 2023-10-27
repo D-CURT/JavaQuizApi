@@ -19,5 +19,5 @@ public abstract class BaseDto implements Serializable {
      * <p>otherwise a new value will be generated and then show in a response,
      * if an entity creation succeeded.
      */
-    public String code;
+    private String code;
 }

@@ -1,6 +1,7 @@
 package com.quiz.javaquizapi.unit.service.mail;
 
 import com.quiz.javaquizapi.ApiTests;
+import com.quiz.javaquizapi.exception.user.PasswordInUseException;
 import com.quiz.javaquizapi.model.user.PasswordCode;
 import com.quiz.javaquizapi.model.user.User;
 import com.quiz.javaquizapi.service.mail.ChangePasswordService;
@@ -25,8 +26,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -70,7 +74,7 @@ public class ChangePasswordServiceTests extends ApiTests {
         verify(codeService).create(codeCaptor.capture());
         var passwordCode = codeCaptor.getValue();
         assertThat(passwordCode).isNotNull();
-        assertThat(passwordCode.getPasswordCode().length()).isEqualTo(QuizChangePasswordService.CODE_LENGTH);
+        assertThat(passwordCode.getCheckNumber().length()).isEqualTo(QuizChangePasswordService.CODE_LENGTH);
         assertThat(passwordCode.getUser()).isNotNull();
         assertThat(passwordCode.getUser().getUsername()).isEqualTo(localUser.getUsername());
         verify(messageSource).getMessage(eq(subjectKey), arrayCaptor.capture(), any());
@@ -92,10 +96,11 @@ public class ChangePasswordServiceTests extends ApiTests {
         var expectedCode = RandomStringUtils.random(QuizChangePasswordService.CODE_LENGTH, false, true);
         var expected =
                 new PasswordCode()
-                        .setPasswordCode(expectedCode)
+                        .setCheckNumber(expectedCode)
                         .setPassword(newPass)
                         .setUser(localUser);
         expected.setCreatedAt(LocalDateTime.now());
+        when(codeService.isValid(expected)).thenReturn(Boolean.TRUE);
         var userCaptor = ArgumentCaptor.forClass(User.class);
         service.changePassword(expected);
         verify(codeService).isValid(expected);
@@ -105,7 +110,30 @@ public class ChangePasswordServiceTests extends ApiTests {
         var user = userCaptor.getValue();
         assertThat(user).isNotNull();
         assertThat(user.getPassword()).isEqualTo(newPass);
-        assertThat(captureLogs()).contains("Saving a new password...");
+        assertThat(captureLogs()).contains("Check if the password is already in use...", "Saving a new password...");
+    }
+
+    @Test
+    @DisplayName("Change password when the new one is already in use")
+    public void testChangingPasswordGivenTheSamePasswordThenThrowPasswordInUseException() {
+        when(userService.getMe(localUser.getUsername())).thenReturn(localUser);
+        var expectedCode = RandomStringUtils.random(QuizChangePasswordService.CODE_LENGTH, false, true);
+        var expected =
+                new PasswordCode()
+                        .setCheckNumber(expectedCode)
+                        .setPassword(localUser.getPassword())
+                        .setUser(localUser);
+        expected.setCreatedAt(LocalDateTime.now().minusMinutes(10));
+        when(codeService.isValid(expected)).thenReturn(Boolean.TRUE);
+        var exception = assertThrows(PasswordInUseException.class, () -> service.changePassword(expected));
+        assertThat(exception.getReason()).isEqualTo(PasswordInUseException.DEFAULT_ERROR);
+        assertThat(exception.getCode()).isEqualTo(PasswordInUseException.PASSWORD_IN_USE_CODE);
+        assertThat(exception.getArgs()).hasSize(0);
+        verify(codeService).isValid(expected);
+        verify(userService).getMe(localUser.getUsername());
+        verify(userService, never()).update(any(User.class));
+        verify(encoder, never()).encode(anyString());
+        assertThat(captureLogs()).contains("Check if the password is already in use...");
     }
 
     @AfterEach

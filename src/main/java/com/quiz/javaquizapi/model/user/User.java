@@ -34,5 +34,5 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Providers provider;
 
-    private boolean enabled = true;
+    private Boolean enabled = Boolean.TRUE;
 }

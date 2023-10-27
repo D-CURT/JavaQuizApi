@@ -55,6 +55,7 @@ public class ProfileFacadeTests extends ProfileTests {
         when(service.getMe(localUser.getUsername())).thenReturn(localProfile);
         ProfileDto me = facade.getMe(localUser.getUsername());
         assertThat(me).isNotNull();
+        assertThat(me.getUsername()).isNull();
         assertThat(me.getTier()).isEqualTo(Tiers.MIDDLE);
         assertThat(me.getScore()).isEqualTo(localProfile.getScore());
         assertThat(me.getRate()).isEqualTo(localProfile.getRate());
@@ -71,6 +72,7 @@ public class ProfileFacadeTests extends ProfileTests {
         dto.setUsername(localUser.getUsername());
         facade.create(dto);
         verify(userService).getMe(localUser.getUsername());
+        assertThat(dto.getUsername()).isNull();
         assertThat(captureLogs()).contains(
                 "Crating a new trainee profile...",
                 "Profile created successfully: tier - Trainee, score - 0, rate - 0.");

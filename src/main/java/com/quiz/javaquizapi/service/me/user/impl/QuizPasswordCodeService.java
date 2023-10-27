@@ -39,15 +39,15 @@ public class QuizPasswordCodeService extends BaseMeService<PasswordCode> impleme
     @Override
     public PasswordCode getMe(String username) {
         logFetchingEntity();
-        return repository.findTopByUserUsername(username)
+        return repository.findTopByUserUsernameOrderByCreatedAtDesc(username)
                 .orElseThrow(() -> new PasswordCodeNotFoundException(username));
     }
 
     @Override
     public boolean isValid(PasswordCode code) {
         log.info("Validating password code...");
-        return repository.findTopByUserUsername(code.getUser().getUsername())
-                .filter(pass -> StringUtils.equals(code.getPasswordCode(), pass.getPasswordCode()))
+        return repository.findTopByUserUsernameOrderByCreatedAtDesc(code.getUser().getUsername())
+                .filter(pass -> StringUtils.equals(code.getCheckNumber(), pass.getCheckNumber()))
                 .map(pass -> pass
                         .getCreatedAt()
                         .isAfter(LocalDateTime.now().minusMinutes(PASSWORD_CODE_EXPIRATION_TIME_IN_MINUTES)))

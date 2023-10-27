@@ -1,5 +1,6 @@
 package com.quiz.javaquizapi.dto;
 
+import com.quiz.javaquizapi.dto.user.UserDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,7 +14,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors
-public abstract class MeDto extends BaseDto {
+public abstract class MeDto extends BaseDto implements Nullifiable {
     /**
      * The essential field of a <strong>User</strong> detail. <strong>Cannot be null or empty</strong>.
      */
@@ -27,6 +28,7 @@ public abstract class MeDto extends BaseDto {
      *
      * @return this.
      */
+    @Override
     public MeDto nullify() {
         username = null;
         return this;

@@ -19,6 +19,11 @@ public class QuizResponseService implements ResponseService {
     private final MessageSource msgSource;
 
     @Override
+    public Response ok() {
+        return build(null);
+    }
+
+    @Override
     public Response build(Object data) {
         return new Response().setData(data);
     }

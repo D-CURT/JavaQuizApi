@@ -1,12 +1,17 @@
 package com.quiz.javaquizapi.integration.facade.me;
 
-import com.quiz.javaquizapi.dto.UserDto;
+import com.quiz.javaquizapi.dto.user.UserDto;
+import com.quiz.javaquizapi.dto.user.PasswordCodeDto;
 import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.user.QuizUserFacade;
 import com.quiz.javaquizapi.facade.me.user.UserFacade;
 import com.quiz.javaquizapi.integration.ApiIntegrationTests;
+import com.quiz.javaquizapi.model.user.PasswordCode;
 import com.quiz.javaquizapi.model.user.User;
+import com.quiz.javaquizapi.service.mail.ChangePasswordService;
+import com.quiz.javaquizapi.service.me.user.PasswordCodeService;
 import com.quiz.javaquizapi.service.me.user.UserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +20,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import static com.quiz.javaquizapi.service.mail.impl.QuizChangePasswordService.CODE_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -25,6 +34,10 @@ import static org.mockito.Mockito.when;
 @DisplayName("User facade tests")
 public class UserFacadeTests extends ApiIntegrationTests {
     @Mock
+    private ChangePasswordService passwordService;
+    @Mock
+    private PasswordCodeService codeService;
+    @Mock
     private UserService service;
     @Autowired
     private Mapper mapper;
@@ -33,7 +46,7 @@ public class UserFacadeTests extends ApiIntegrationTests {
     @BeforeEach
     void setUp() {
         initLog();
-        facade = new QuizUserFacade(service, mapper);
+        facade = new QuizUserFacade(service, passwordService, codeService, mapper);
     }
 
     @Test
@@ -42,6 +55,7 @@ public class UserFacadeTests extends ApiIntegrationTests {
         when(service.getMe(localUser.getUsername())).thenReturn(localUser);
         UserDto me = facade.getMe(localUser.getUsername());
         assertThat(me).isNotNull();
+        assertThat(me.getEnabled()).isNull();
         assertThat(me.getUsername()).isNull();
         assertThat(me.getPassword()).isNull();
         assertThat(me.getDisplayName()).isEqualTo(localUser.getDisplayName());
@@ -58,11 +72,49 @@ public class UserFacadeTests extends ApiIntegrationTests {
         facade.create(dto.setPassword(localUser.getPassword()));
         var userCaptor = ArgumentCaptor.forClass(User.class);
         verify(service).create(userCaptor.capture());
+        assertThat(dto.getUsername()).isNull();
+        assertThat(dto.getPassword()).isNull();
         var user = userCaptor.getValue();
         assertThat(user).isNotNull();
         assertThat(user.getUsername()).isEqualTo(localUser.getUsername());
         assertThat(user.getPassword()).isEqualTo(localUser.getPassword());
         assertThat(captureLogs()).contains("Starting a new user authorization...", "User authorization succeeded.");
+    }
+
+    @Test
+    @DisplayName("Send password code by email")
+    public void testSendingPasswordCodeGivenCurrentUsername() {
+        facade.sendCodeToChangePassword(localUser.getUsername());
+        verify(passwordService).sendCode(localUser.getUsername());
+    }
+
+    @Test
+    @DisplayName("Change user password")
+    public void testChangingPasswordGivenCurrentUsername() {
+        var expectedCode = RandomStringUtils.random(CODE_LENGTH, false, true);
+        var expectedPassword = "newPass";
+        var dto = new PasswordCodeDto()
+                .setPassword(expectedPassword)
+                .setCheckNumber(expectedCode);
+        dto.setUsername(localUser.getUsername());
+        var entity =
+                new PasswordCode()
+                        .setCheckNumber(expectedCode)
+                        .setUser(localUser);
+        entity.setCode(UUID.randomUUID().toString());
+        entity.setCreatedAt(LocalDateTime.now());
+        when(codeService.getMe(localUser.getUsername())).thenReturn(entity);
+        var expectedUser = new User().setUsername(dto.getUsername());
+        entity.setUser(expectedUser);
+        facade.changePassword(dto);
+        var codeCaptor = ArgumentCaptor.forClass(PasswordCode.class);
+        verify(passwordService).changePassword(codeCaptor.capture());
+        var actualCode = codeCaptor.getValue();
+        assertThat(actualCode).isNotNull();
+        assertThat(actualCode.getPassword()).isEqualTo(expectedPassword);
+        assertThat(actualCode.getUser().getUsername()).isEqualTo(expectedUser.getUsername());
+        verify(codeService).getMe(dto.getUsername());
+        assertThat(captureLogs()).contains("The current user password changed successfully.");
     }
 
     @AfterEach

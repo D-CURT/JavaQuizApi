@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 @DisplayName("Password code service tests")
 public class PasswordCodeServiceTests extends ApiTests {
     private final PasswordCode testCode = new PasswordCode()
-            .setPasswordCode("1234")
+            .setCheckNumber("1234")
             .setPassword("pass")
             .setUser(localUser);
 
@@ -56,18 +56,19 @@ public class PasswordCodeServiceTests extends ApiTests {
     @Test
     @DisplayName("Fetch me by username")
     public void testFetchingMeGivenCurrentUsername() {
-        when(repository.findTopByUserUsername(localUser.getUsername())).thenReturn(Optional.of(testCode));
+        when(repository.findTopByUserUsernameOrderByCreatedAtDesc(localUser.getUsername()))
+                .thenReturn(Optional.of(testCode));
         var actual = service.getMe(localUser.getUsername());
         assertThat(actual).isNotNull();
         assertThat(actual).isEqualTo(testCode);
         assertThat(captureLogs()).contains("Fetching a PasswordCode by username...");
-        verify(repository).findTopByUserUsername(localUser.getUsername());
+        verify(repository).findTopByUserUsernameOrderByCreatedAtDesc(localUser.getUsername());
     }
 
     @Test
     @DisplayName("Fetch me by incorrect username")
     public void testFetchingMeGivenIncorrectUsernameThenThrowPasswordCodeNotFoundException() {
-        when(repository.findTopByUserUsername("wrong username")).thenReturn(Optional.empty());
+        when(repository.findTopByUserUsernameOrderByCreatedAtDesc("wrong username")).thenReturn(Optional.empty());
         var exception = assertThrows(
                 PasswordCodeNotFoundException.class,
                 () -> service.getMe("wrong username"));
@@ -76,7 +77,7 @@ public class PasswordCodeServiceTests extends ApiTests {
         assertThat(exception.getArgs()).hasSize(1);
         assertThat(exception.getArgs()).contains("wrong username");
         assertThat(captureLogs()).contains("Fetching a PasswordCode by username...");
-        verify(repository).findTopByUserUsername("wrong username");
+        verify(repository).findTopByUserUsernameOrderByCreatedAtDesc("wrong username");
     }
 
     @Test
@@ -106,7 +107,7 @@ public class PasswordCodeServiceTests extends ApiTests {
     @DisplayName("Create a new Password code")
     public void testCreatingPasswordCode() {
         var expected = new PasswordCode()
-                .setPasswordCode(testCode.getPasswordCode())
+                .setCheckNumber(testCode.getCheckNumber())
                 .setPassword(testCode.getPassword())
                 .setUser(localUser);
         when(repository.save(any(PasswordCode.class))).thenReturn(testCode);
@@ -115,7 +116,7 @@ public class PasswordCodeServiceTests extends ApiTests {
         verify(repository).save(codeCaptor.capture());
         var actual = codeCaptor.getValue();
         assertThat(actual).isNotNull();
-        assertThat(actual.getPasswordCode()).isEqualTo(expected.getPasswordCode());
+        assertThat(actual.getCheckNumber()).isEqualTo(expected.getCheckNumber());
         assertThat(actual.getPassword()).isEqualTo(expected.getPassword());
         assertThat(actual.getUser()).isEqualTo(localUser);
         assertThat(ValidationUtils
@@ -129,7 +130,8 @@ public class PasswordCodeServiceTests extends ApiTests {
     @DisplayName("Validate password code")
     public void testValidatingPasswordCodeGivenValidCode() {
         testCode.setCreatedAt(LocalDateTime.now());
-        when(repository.findTopByUserUsername(localUser.getUsername())).thenReturn(Optional.of(testCode));
+        when(repository.findTopByUserUsernameOrderByCreatedAtDesc(localUser.getUsername()))
+                .thenReturn(Optional.of(testCode));
         assertTrue(service.isValid(testCode));
         assertThat(captureLogs()).contains("Validating password code...");
     }
@@ -138,13 +140,14 @@ public class PasswordCodeServiceTests extends ApiTests {
     @DisplayName("Validate nonexistent password code")
     public void testValidatingPasswordCodeGiveNonexistentPasswordCodeThenThrowPasswordCodeNotFoundException() {
         var expected = new PasswordCode().setUser(new User().setUsername("wrong username"));
-        when(repository.findTopByUserUsername("wrong username")).thenReturn(Optional.empty());
+        when(repository.findTopByUserUsernameOrderByCreatedAtDesc("wrong username"))
+                .thenReturn(Optional.empty());
         var exception = assertThrows(PasswordCodeNotFoundException.class, () -> service.isValid(expected));
         assertThat(exception.getReason()).isEqualTo(PasswordCodeNotFoundException.DEFAULT_ERROR);
         assertThat(exception.getCode()).isEqualTo(PasswordCodeNotFoundException.PASSWORD_CODE_NOT_FOUND_CODE);
         assertThat(exception.getArgs()).hasSize(1);
         assertThat(exception.getArgs()).contains("wrong username");
-        verify(repository).findTopByUserUsername("wrong username");
+        verify(repository).findTopByUserUsernameOrderByCreatedAtDesc("wrong username");
         assertThat(captureLogs()).contains("Validating password code...");
     }
 
@@ -152,10 +155,11 @@ public class PasswordCodeServiceTests extends ApiTests {
     @DisplayName("Validate expired password code")
     public void testValidatingPasswordCodeGivenExpiredPasswordCode() {
         testCode.setCreatedAt(LocalDateTime.now().minusMinutes(10));
-        when(repository.findTopByUserUsername(localUser.getUsername())).thenReturn(Optional.of(testCode));
+        when(repository.findTopByUserUsernameOrderByCreatedAtDesc(localUser.getUsername()))
+                .thenReturn(Optional.of(testCode));
         assertFalse(service.isValid(testCode));
         assertThat(captureLogs()).contains("Validating password code...");
-        verify(repository).findTopByUserUsername(localUser.getUsername());
+        verify(repository).findTopByUserUsernameOrderByCreatedAtDesc(localUser.getUsername());
     }
 
     @AfterEach

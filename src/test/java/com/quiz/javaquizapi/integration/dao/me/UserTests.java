@@ -16,6 +16,7 @@ public class UserTests extends MeDaoTests<UserRepository> {
         getRepository().findByUsername(localUser.getUsername())
                 .ifPresentOrElse(user -> {
                     assertThat(user).isNotNull();
+                    assertThat(user.getEnabled()).isTrue();
                     assertThat(user.getUsername()).isEqualTo(localUser.getUsername());
                     assertThat(user.getPassword()).isEqualTo("password");
                 }, () -> Assertions.fail("User not found"));

@@ -1,7 +1,8 @@
 package com.quiz.javaquizapi.controller.v0;
 
 import com.quiz.javaquizapi.controller.BaseMeController;
-import com.quiz.javaquizapi.dto.UserDto;
+import com.quiz.javaquizapi.dto.user.UserDto;
+import com.quiz.javaquizapi.dto.user.PasswordCodeDto;
 import com.quiz.javaquizapi.facade.me.user.UserFacade;
 import com.quiz.javaquizapi.model.http.Response;
 import com.quiz.javaquizapi.model.user.User;
@@ -30,13 +31,31 @@ public class UserControllerV0 extends BaseMeController<User, UserDto> {
     /**
      * Authorizes a user with accepted details.
      *
-     * @param data details of the user to authorize
-     * @return Response with authorized user
+     * @param data details of the user to authorize.
+     * @return Response with authorized user.
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/authorization", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response authorize(@RequestBody @Validated(UserDto.Authorization.class) UserDto data) {
         return create(data);
+    }
+
+    /**
+     * Sends a password update email to the current username.
+     *
+     * @return empty response.
+     */
+    @PostMapping("/me/password/code")
+    public Response sendPasswordCode() {
+        castFacade(UserFacade.class).sendCodeToChangePassword(getCurrentUsername());
+        return getResponseService().ok();
+    }
+
+    @PostMapping("/me/password/update")
+    public Response changePassword(@RequestBody @Validated(PasswordCodeDto.PasswordChange.class) PasswordCodeDto data) {
+        data.setUsername(getCurrentUsername());
+        castFacade(UserFacade.class).changePassword(data);
+        return getResponseService().ok();
     }
 
     //TODO implement user archive

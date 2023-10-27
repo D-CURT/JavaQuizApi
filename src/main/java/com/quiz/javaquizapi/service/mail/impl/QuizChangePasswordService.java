@@ -1,6 +1,7 @@
 package com.quiz.javaquizapi.service.mail.impl;
 
 import com.quiz.javaquizapi.exception.user.PasswordCodeExpiredException;
+import com.quiz.javaquizapi.exception.user.PasswordInUseException;
 import com.quiz.javaquizapi.model.user.PasswordCode;
 import com.quiz.javaquizapi.model.user.User;
 import com.quiz.javaquizapi.service.mail.ChangePasswordService;
@@ -11,6 +12,7 @@ import com.quiz.javaquizapi.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,18 +53,23 @@ public class QuizChangePasswordService implements ChangePasswordService {
         mailSender.send(message);
         codeService.create(
                 new PasswordCode()
-                        .setPasswordCode(code)
+                        .setCheckNumber(code)
                         .setUser(userService.getMe(toEmail)));
     }
 
     @Override
     public void changePassword(PasswordCode code) {
-        if (codeService.isValid(code)) {
+        if (!codeService.isValid(code)) {
             throw new PasswordCodeExpiredException();
         }
         User user = userService.getMe(code.getUser().getUsername());
+        log.info("Check if the password is already in use...");
+        if (StringUtils.equals(user.getPassword(), code.getPassword())) {
+            throw new PasswordInUseException();
+        }
         user.setPassword(passwordEncoder.encode(code.getPassword()));
         log.info("Saving a new password...");
+        code.setUser(user);
         userService.update(user);
     }
 }

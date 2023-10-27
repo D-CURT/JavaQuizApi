@@ -7,9 +7,11 @@ import com.quiz.javaquizapi.model.http.Response;
 import com.quiz.javaquizapi.model.profile.Profile;
 import com.quiz.javaquizapi.service.response.ResponseService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,6 +31,7 @@ public class ProfileControllerV0 extends BaseMeController<Profile, ProfileDto> {
      *
      * @return a new {@link Profile}.
      */
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = StringUtils.EMPTY, produces = MediaType.APPLICATION_JSON_VALUE)
     public Response create() {
         return create(createMeDto(ProfileDto.class));

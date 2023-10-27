@@ -48,6 +48,7 @@ public class PersonalInfoFacadeTests extends ProfileTests {
         when(infoService.getMe(localUser.getUsername())).thenReturn(localInfo);
         var me = facade.getMe(localUser.getUsername());
         assertThat(me).isNotNull();
+        assertThat(me.getUsername()).isNull();
         assertThat(me.getProfileCode()).isEqualTo(getLocalProfile().getCode());
         assertThat(me.getBio()).isEqualTo(localInfo.getBio());
         verify(infoService).getMe(localUser.getUsername());
@@ -61,6 +62,7 @@ public class PersonalInfoFacadeTests extends ProfileTests {
         dto.setUsername(localUser.getUsername());
         facade.create(dto);
         verify(profileService).getMe(localUser.getUsername());
+        assertThat(dto.getUsername()).isNull();
         assertThat(captureLogs()).contains(
                 "Creating an empty personal info for the current user...",
                 "A personal info object successfully created.");

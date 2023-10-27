@@ -14,6 +14,12 @@ public interface ResponseService {
     String API_ERROR_CODE_PREFIX = "api.errorCode.";
 
     /**
+     * Creates a positive empty response.
+     * @return created Response.
+     */
+    Response ok();
+
+    /**
      * Creates a positive response.
      *
      * @param data data of a positive response.

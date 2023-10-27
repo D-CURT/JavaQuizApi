@@ -14,5 +14,5 @@ public interface PasswordCodeRepository extends BaseRepository<PasswordCode> {
      * @param username username field value.
      * @return {@link PasswordCode} if it exists. Optional field.
      */
-    Optional<PasswordCode> findTopByUserUsername(String username);
+    Optional<PasswordCode> findTopByUserUsernameOrderByCreatedAtDesc(String username);
 }

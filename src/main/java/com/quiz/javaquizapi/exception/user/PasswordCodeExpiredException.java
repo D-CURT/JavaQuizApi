@@ -15,7 +15,7 @@ public class PasswordCodeExpiredException extends UserException {
     public static final String DEFAULT_ERROR = "Password code is expired";
 
     public PasswordCodeExpiredException() {
-        this(HttpStatus.NOT_FOUND, DEFAULT_ERROR, PASSWORD_CODE_EXPIRED);
+        this(HttpStatus.BAD_REQUEST, DEFAULT_ERROR, PASSWORD_CODE_EXPIRED);
     }
 
     public PasswordCodeExpiredException(HttpStatus status, String message, int code, String... args) {
