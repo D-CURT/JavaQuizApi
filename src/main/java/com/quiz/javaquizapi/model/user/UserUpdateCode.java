@@ -2,6 +2,8 @@ package com.quiz.javaquizapi.model.user;
 
 import com.quiz.javaquizapi.model.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -20,9 +22,14 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Table(name = "password_codes")
 @SequenceGenerator(name = "id_gen", sequenceName = "pass_code_sec", allocationSize = 5)
-public class PasswordCode extends BaseEntity {
+public class UserUpdateCode extends BaseEntity {
+
     @Transient
-    private String password;
+    private String value;
+
+    @Enumerated(EnumType.STRING)
+    private UserUpdateType type;
+
     @NotNull
     private String checkNumber;
 

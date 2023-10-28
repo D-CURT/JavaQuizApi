@@ -1,8 +1,8 @@
 package com.quiz.javaquizapi.integration.dao.me;
 
-import com.quiz.javaquizapi.dao.PasswordCodeRepository;
+import com.quiz.javaquizapi.dao.UserUpdateCodeRepository;
 import com.quiz.javaquizapi.integration.dao.MeDaoTests;
-import com.quiz.javaquizapi.model.user.PasswordCode;
+import com.quiz.javaquizapi.model.user.UserUpdateCode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,13 +12,13 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Password code DAO tests")
-public class PasswordCodeTests extends MeDaoTests<PasswordCodeRepository> {
-    private PasswordCode testCode;
+@DisplayName("User update code DAO tests")
+public class UserUpdateCodeTests extends MeDaoTests<UserUpdateCodeRepository> {
+    private UserUpdateCode testCode;
 
     @BeforeEach
     void setUp() {
-        testCode = new PasswordCode().setUser(localUser).setPassword("pass").setCheckNumber("1234");
+        testCode = new UserUpdateCode().setUser(localUser).setValue("pass").setCheckNumber("1234");
         testCode.setCode(UUID.randomUUID().toString());
         getRepository().save(testCode);
     }
@@ -31,8 +31,8 @@ public class PasswordCodeTests extends MeDaoTests<PasswordCodeRepository> {
                         assertThat(code).isNotNull();
                         assertThat(code.getCode()).isEqualTo(testCode.getCode());
                         assertThat(code.getCheckNumber()).isEqualTo(testCode.getCheckNumber());
-                        assertThat(code.getPassword()).isEqualTo(testCode.getPassword());
+                        assertThat(code.getValue()).isEqualTo(testCode.getValue());
                         assertThat(code.getUser()).isEqualTo(localUser);
-                }, () -> Assertions.fail("Password code not found"));
+                }, () -> Assertions.fail("User update code not found"));
     }
 }
