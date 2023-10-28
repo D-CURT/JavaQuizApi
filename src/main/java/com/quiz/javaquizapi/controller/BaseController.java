@@ -1,6 +1,5 @@
 package com.quiz.javaquizapi.controller;
 
-import com.quiz.javaquizapi.common.utils.GenericUtils;
 import com.quiz.javaquizapi.dto.BaseDto;
 import com.quiz.javaquizapi.facade.QuizFacade;
 import com.quiz.javaquizapi.model.http.Response;
@@ -39,7 +38,7 @@ public abstract class BaseController<D extends BaseDto> {
      * @return the current username.
      */
     protected String getCurrentUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = null;
         if (principal instanceof DefaultOidcUser oidcUser) {
             username = oidcUser.getEmail();
@@ -47,9 +46,5 @@ public abstract class BaseController<D extends BaseDto> {
             username = quizUser.getUsername();
         }
         return username;
-    }
-
-    protected <T> T castFacade(Class<T> type) {
-        return GenericUtils.cast(getFacade(), type);
     }
 }

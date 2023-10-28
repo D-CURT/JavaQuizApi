@@ -1,19 +1,20 @@
 package com.quiz.javaquizapi.facade.me.user;
 
 import com.quiz.javaquizapi.annotation.Facade;
-import com.quiz.javaquizapi.dto.user.UserDto;
 import com.quiz.javaquizapi.dto.user.PasswordCodeDto;
+import com.quiz.javaquizapi.dto.user.UserDto;
 import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.BaseMeFacade;
-import com.quiz.javaquizapi.model.user.PasswordCode;
 import com.quiz.javaquizapi.model.user.User;
 import com.quiz.javaquizapi.service.mail.ChangePasswordService;
 import com.quiz.javaquizapi.service.me.user.PasswordCodeService;
 import com.quiz.javaquizapi.service.me.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.quiz.javaquizapi.common.utils.GenericUtils.cast;
+
 /**
- * Provides intermediary operations related to a {@link com.quiz.javaquizapi.model.user.User}.
+ * Provides intermediary operations related to a {@link User}.
  */
 @Slf4j
 @Facade
@@ -31,7 +32,7 @@ public class QuizUserFacade extends BaseMeFacade<User, UserDto> implements UserF
     @Override
     public void create(UserDto dto) {
         log.info("Starting a new user authorization...");
-        User user = mapper.map(dto, User.class);
+        var user = mapper.map(dto, com.quiz.javaquizapi.model.user.User.class);
         service.create(user);
         mapper.map(user, dto);
         log.info("User authorization succeeded.");
@@ -44,9 +45,18 @@ public class QuizUserFacade extends BaseMeFacade<User, UserDto> implements UserF
 
     @Override
     public void changePassword(PasswordCodeDto dto) {
-        PasswordCode code = codeService.getMe(dto.getUsername());
+        var code = codeService.getMe(dto.getUsername());
         mapper.map(dto, code);
-        passwordService.changePassword(code.setUser(new User().setUsername(dto.getUsername())));
+        passwordService.changePassword(code.setUser(new com.quiz.javaquizapi.model.user.User().setUsername(dto.getUsername())));
         log.info("The current user password changed successfully.");
+    }
+
+    @Override
+    public void update(UserDto data) {
+        log.info("Updating a user...");
+        var user = service.get(data.getCode());
+        mapper.map(data, user);
+        cast(service, UserService.class).update(user);
+        log.info("User update succeeded.");
     }
 }

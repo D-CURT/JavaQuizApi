@@ -1,7 +1,7 @@
 package com.quiz.javaquizapi.integration.facade.me;
 
-import com.quiz.javaquizapi.dto.user.UserDto;
 import com.quiz.javaquizapi.dto.user.PasswordCodeDto;
+import com.quiz.javaquizapi.dto.user.UserDto;
 import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.user.QuizUserFacade;
 import com.quiz.javaquizapi.facade.me.user.UserFacade;
@@ -53,7 +53,7 @@ public class UserFacadeTests extends ApiIntegrationTests {
     @DisplayName("Fetch me by username")
     public void testFetchingMe() {
         when(service.getMe(localUser.getUsername())).thenReturn(localUser);
-        UserDto me = facade.getMe(localUser.getUsername());
+        var me = facade.getMe(localUser.getUsername());
         assertThat(me).isNotNull();
         assertThat(me.getEnabled()).isNull();
         assertThat(me.getUsername()).isNull();
@@ -66,11 +66,11 @@ public class UserFacadeTests extends ApiIntegrationTests {
     @Test
     @DisplayName("Create user")
     public void testCreationMe() {
-        doNothing().when(service).create(any(User.class));
+        doNothing().when(service).create(any(com.quiz.javaquizapi.model.user.User.class));
         var dto = new UserDto();
         dto.setUsername(localUser.getUsername());
         facade.create(dto.setPassword(localUser.getPassword()));
-        var userCaptor = ArgumentCaptor.forClass(User.class);
+        var userCaptor = ArgumentCaptor.forClass(com.quiz.javaquizapi.model.user.User.class);
         verify(service).create(userCaptor.capture());
         assertThat(dto.getUsername()).isNull();
         assertThat(dto.getPassword()).isNull();
@@ -104,7 +104,7 @@ public class UserFacadeTests extends ApiIntegrationTests {
         entity.setCode(UUID.randomUUID().toString());
         entity.setCreatedAt(LocalDateTime.now());
         when(codeService.getMe(localUser.getUsername())).thenReturn(entity);
-        var expectedUser = new User().setUsername(dto.getUsername());
+        var expectedUser = new com.quiz.javaquizapi.model.user.User().setUsername(dto.getUsername());
         entity.setUser(expectedUser);
         facade.changePassword(dto);
         var codeCaptor = ArgumentCaptor.forClass(PasswordCode.class);
@@ -115,6 +115,21 @@ public class UserFacadeTests extends ApiIntegrationTests {
         assertThat(actualCode.getUser().getUsername()).isEqualTo(expectedUser.getUsername());
         verify(codeService).getMe(dto.getUsername());
         assertThat(captureLogs()).contains("The current user password changed successfully.");
+    }
+
+    @Test
+    @DisplayName("Update a user")
+    public void testUpdatingUserGivenValidUserEntity() {
+        when(service.get(localUser.getCode())).thenReturn(localUser);
+        var data = new UserDto().setDisplayName("updated display name");
+        data.setCode(localUser.getCode());
+        facade.update(data);
+        var userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(service).update(userCaptor.capture());
+        var user = userCaptor.getValue();
+        assertThat(user).isNotNull();
+        assertThat(user.getDisplayName()).isEqualTo(data.getDisplayName());
+        assertThat(captureLogs()).contains("Updating a user...", "User update succeeded.");
     }
 
     @AfterEach

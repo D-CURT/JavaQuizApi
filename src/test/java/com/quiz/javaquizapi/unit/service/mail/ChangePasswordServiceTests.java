@@ -3,7 +3,6 @@ package com.quiz.javaquizapi.unit.service.mail;
 import com.quiz.javaquizapi.ApiTests;
 import com.quiz.javaquizapi.exception.user.PasswordInUseException;
 import com.quiz.javaquizapi.model.user.PasswordCode;
-import com.quiz.javaquizapi.model.user.User;
 import com.quiz.javaquizapi.service.mail.ChangePasswordService;
 import com.quiz.javaquizapi.service.mail.MailSenderService;
 import com.quiz.javaquizapi.service.mail.impl.QuizChangePasswordService;
@@ -101,7 +100,7 @@ public class ChangePasswordServiceTests extends ApiTests {
                         .setUser(localUser);
         expected.setCreatedAt(LocalDateTime.now());
         when(codeService.isValid(expected)).thenReturn(Boolean.TRUE);
-        var userCaptor = ArgumentCaptor.forClass(User.class);
+        var userCaptor = ArgumentCaptor.forClass(com.quiz.javaquizapi.model.user.User.class);
         service.changePassword(expected);
         verify(codeService).isValid(expected);
         verify(userService).getMe(localUser.getUsername());
@@ -131,7 +130,7 @@ public class ChangePasswordServiceTests extends ApiTests {
         assertThat(exception.getArgs()).hasSize(0);
         verify(codeService).isValid(expected);
         verify(userService).getMe(localUser.getUsername());
-        verify(userService, never()).update(any(User.class));
+        verify(userService, never()).update(any(com.quiz.javaquizapi.model.user.User.class));
         verify(encoder, never()).encode(anyString());
         assertThat(captureLogs()).contains("Check if the password is already in use...");
     }

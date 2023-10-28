@@ -60,7 +60,7 @@ public class UserServiceTests extends ApiTests {
     @DisplayName("Fetch me by username")
     public void testFetchingMe() {
         when(repository.findByUsername(localUser.getUsername())).thenReturn(Optional.of(localUser));
-        User me = service.getMe(localUser.getUsername());
+        var me = service.getMe(localUser.getUsername());
         assertThat(me).isNotNull();
         assertThat(me.getUsername()).isEqualTo(localUser.getUsername());
         verify(repository).findByUsername(localUser.getUsername());
@@ -80,7 +80,7 @@ public class UserServiceTests extends ApiTests {
     @DisplayName("Fetch user by code")
     public void testFetchingUserGivenValidCode() {
         when(repository.findByCode(localUser.getCode())).thenReturn(Optional.of(localUser));
-        User user = service.get(localUser.getCode());
+        var user = service.get(localUser.getCode());
         assertThat(user).isNotNull();
         assertThat(user.getCode()).isEqualTo(localUser.getCode());
         verify(repository).findByCode(localUser.getCode());
@@ -91,7 +91,7 @@ public class UserServiceTests extends ApiTests {
     @DisplayName("Unable to create a user - already exists")
     public void testCreateUserGivenUserAlreadyExists() {
         when(repository.existsByUsername(localUser.getUsername())).thenReturn(Boolean.TRUE);
-        UserExistsException exception = Assertions.assertThrows(UserExistsException.class, () -> service.create(localUser));
+        var exception = Assertions.assertThrows(UserExistsException.class, () -> service.create(localUser));
         assertThat(exception.getReason()).isEqualTo("Unable to create a user, such username already exists");
         assertThat(exception.getArgs()).contains(localUser.getUsername()).hasSize(1);
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
@@ -116,15 +116,14 @@ public class UserServiceTests extends ApiTests {
     @DisplayName("Create a new user - all properties are preset")
     public void testCreateUserGivenAllPropertiesPreset() {
         var encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode(localUser.getPassword());
+        var encodedPassword = encoder.encode(localUser.getPassword());
         when(passwordEncoder.encode(localUser.getPassword()))
                 .thenReturn(encodedPassword);
         var user = createUser();
         assertThat(user).isNotNull();
         assertThat(encoder.matches("password", user.getPassword())).isTrue();
         assertThat(user.getDisplayName()).isEqualTo("displayName");
-        String logs = captureLogs();
-        assertThat(logs).contains(
+        assertThat(captureLogs()).contains(
                 "Checking if a user with given username already exists...",
                 "Applying LOCAL authentication provider...",
                 "Resolving a new entity unique code...",
@@ -148,6 +147,15 @@ public class UserServiceTests extends ApiTests {
         var user = createUser();
         assertThat(user).isNotNull();
         assertThat(user.getDisplayName()).doesNotContain("displayName").hasSize(10);
+    }
+
+    @Test
+    @DisplayName("Update a user")
+    public void testUpdatingUserGivenValidUserEntity() {
+        var user = new User();
+        service.update(user);
+        assertThat(captureLogs()).contains("Saving an updated user...");
+        verify(repository).save(user);
     }
 
     @AfterEach

@@ -56,7 +56,11 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
         repository.save(user);
     }
 
-    // TODO implement update display name
+    @Override
+    public void update(User user) {
+        log.info("Saving an updated user...");
+        repository.save(user);
+    }
 
     private void resolveDisplayName(User user) {
         log.info("Resolving a new user display name...");
@@ -65,10 +69,5 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
                 .ifPresentOrElse(
                         user::setDisplayName,
                         () -> user.setDisplayName(RandomStringUtils.random(10, true, true)));
-    }
-
-    @Override
-    public void update(User user) {
-        repository.save(user);
     }
 }

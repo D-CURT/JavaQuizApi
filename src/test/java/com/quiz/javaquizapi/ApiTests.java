@@ -16,16 +16,15 @@ public class ApiTests {
     private final OutputStream out = new ByteArrayOutputStream();
     private final OutputStream standardOut = System.out;
 
-    protected final User localUser;
+    protected final User localUser = new User()
+            .setUsername("username@mail.com")
+            .setPassword("password")
+            .setDisplayName("displayName")
+            .setRole(Roles.USER)
+            .setProvider(Providers.LOCAL)
+            .setEnabled(Boolean.TRUE);
 
     {
-        localUser = new User()
-                .setUsername("username@mail.com")
-                .setPassword("password")
-                .setDisplayName("displayName")
-                .setRole(Roles.USER)
-                .setProvider(Providers.LOCAL)
-                .setEnabled(Boolean.TRUE);
         localUser.setCode(UUID.randomUUID().toString());
     }
 

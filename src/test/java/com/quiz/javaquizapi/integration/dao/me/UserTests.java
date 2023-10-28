@@ -77,4 +77,17 @@ public class UserTests extends MeDaoTests<UserRepository> {
         assertThat(getRepository().existsByCode("Wrong code")).isFalse();
         assertExecutedQueries();
     }
+
+    @Test
+    @DisplayName("Archive a user by code")
+    public void testArchivingUserByCode() {
+        getRepository().findByCode(localUser.getCode())
+                .ifPresentOrElse(user ->
+                                getRepository().save(user.setEnabled(Boolean.FALSE)),
+                        () -> Assertions.fail("Unable to archive: user not found"));
+        getRepository().findByCode(localUser.getCode())
+                .ifPresentOrElse(user ->
+                                assertThat(user.getEnabled()).isFalse(),
+                        () -> Assertions.fail("Unable to archive: user not found"));
+    }
 }
