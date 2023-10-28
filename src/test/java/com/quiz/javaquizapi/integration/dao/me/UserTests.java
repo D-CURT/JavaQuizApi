@@ -89,5 +89,6 @@ public class UserTests extends MeDaoTests<UserRepository> {
                 .ifPresentOrElse(user ->
                                 assertThat(user.getEnabled()).isFalse(),
                         () -> Assertions.fail("Unable to archive: user not found"));
+        assertExecutedQueries(ExecutedQueries.TWO);
     }
 }
