@@ -1,12 +1,12 @@
-package com.quiz.javaquizapi.dto;
+package com.quiz.javaquizapi.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.quiz.javaquizapi.annotation.Me;
+import com.quiz.javaquizapi.dto.MeDto;
 import com.quiz.javaquizapi.model.user.User;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +30,13 @@ public class UserDto extends MeDto {
     @Size(min = 1, max = 50, groups = Authorization.class, message = "api.errorCode.41")
     private String password;
     private String displayName;
+    private Boolean enabled;
 
-    public interface Authorization {}
+    @Override
+    public UserDto nullify() {
+        super.nullify();
+        password = null;
+        enabled = null;
+        return this;
+    }
 }

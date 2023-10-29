@@ -1,6 +1,6 @@
 package com.quiz.javaquizapi.integration;
 
-import com.quiz.javaquizapi.dto.UserDto;
+import com.quiz.javaquizapi.dto.user.UserDto;
 import com.quiz.javaquizapi.endpoint.RandomPortTests;
 import com.quiz.javaquizapi.model.http.Response;
 import org.junit.jupiter.api.Test;

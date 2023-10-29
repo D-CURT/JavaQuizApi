@@ -1,0 +1,39 @@
+#DB config
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 780161
+
+#OAuth2 config
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 63045766757-pr7bfcsdrd0n9feo9qaotoqic5clh1bq.apps.googleusercontent.com
+            client-secret: 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
+
+#Hibernate config
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+
+#Optional properties...
+#spring.jpa.properties.hibernate.format_sql=true
+#spring.jpa.show-sql=true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: decurt01@gmail.com
+    password: bjgtzmwosxpwfnjv
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+    test-connection: false

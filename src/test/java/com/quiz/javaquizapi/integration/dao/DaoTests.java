@@ -49,7 +49,9 @@ public abstract class DaoTests<R extends BaseRepository> extends ApiTests {
     @RequiredArgsConstructor
     @Getter(AccessLevel.PRIVATE)
     protected enum ExecutedQueries {
-        ONE(1);
+        ONE(1),
+        TWO(2),
+        THREE(3);
 
         private final long count;
 

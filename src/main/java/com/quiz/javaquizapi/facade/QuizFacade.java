@@ -7,7 +7,7 @@ import com.quiz.javaquizapi.dto.BaseDto;
  *
  * @param <D> related dto type
  */
-public interface QuizFacade <D extends BaseDto> {
+public interface QuizFacade<D extends BaseDto> {
     /**
      * Creates an entity in the system.
      *

@@ -31,6 +31,15 @@ public final class GenericUtils {
     }
 
     @SuppressWarnings("all")
+    public static <T> T cast(Object object, Class<T> type) {
+        try {
+            return (T) object;
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to cast an object", e);
+        }
+    }
+
+    @SuppressWarnings("all")
     private static <T, G> Class<G> findGeneric(Class<T> type, int index) {
         try {
             return (Class<G>) Class.forName(((ParameterizedType) type.getGenericSuperclass())

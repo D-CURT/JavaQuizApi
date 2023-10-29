@@ -16,6 +16,7 @@ public class UserTests extends MeDaoTests<UserRepository> {
         getRepository().findByUsername(localUser.getUsername())
                 .ifPresentOrElse(user -> {
                     assertThat(user).isNotNull();
+                    assertThat(user.getEnabled()).isTrue();
                     assertThat(user.getUsername()).isEqualTo(localUser.getUsername());
                     assertThat(user.getPassword()).isEqualTo("password");
                 }, () -> Assertions.fail("User not found"));
@@ -75,5 +76,19 @@ public class UserTests extends MeDaoTests<UserRepository> {
     public void testNonExistingUserByCode() {
         assertThat(getRepository().existsByCode("Wrong code")).isFalse();
         assertExecutedQueries();
+    }
+
+    @Test
+    @DisplayName("Archive a user by code")
+    public void testArchivingUserByCode() {
+        getRepository().findByCode(localUser.getCode())
+                .ifPresentOrElse(user ->
+                                getRepository().save(user.setEnabled(Boolean.FALSE)),
+                        () -> Assertions.fail("Unable to archive: user not found"));
+        getRepository().findByCode(localUser.getCode())
+                .ifPresentOrElse(user ->
+                                assertThat(user.getEnabled()).isFalse(),
+                        () -> Assertions.fail("Unable to archive: user not found"));
+        assertExecutedQueries(ExecutedQueries.TWO);
     }
 }

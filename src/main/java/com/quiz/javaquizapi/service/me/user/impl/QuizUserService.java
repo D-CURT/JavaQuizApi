@@ -46,7 +46,7 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
         if (repository.existsByUsername(user.getUsername())) {
             throw new UserExistsException("Unable to create a user, such username already exists", user.getUsername());
         }
-        setCodeIfValid(user, "Unable to create a new user: provided code is malformed, check its format - UUID is required.");
+        setCodeIfValid(user);
         log.info("Applying USER role...");
         Optional.ofNullable(user.getRole()).ifPresentOrElse(user::setRole, () -> user.setRole(Roles.USER));
         resolveDisplayName(user);
@@ -56,7 +56,11 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
         repository.save(user);
     }
 
-    // TODO implement update display name
+    @Override
+    public void update(User user) {
+        log.info("Saving an updated user...");
+        repository.save(user);
+    }
 
     private void resolveDisplayName(User user) {
         log.info("Resolving a new user display name...");
