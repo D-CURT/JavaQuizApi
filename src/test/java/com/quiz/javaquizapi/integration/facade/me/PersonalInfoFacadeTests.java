@@ -10,6 +10,7 @@ import com.quiz.javaquizapi.service.me.profile.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -66,5 +67,22 @@ public class PersonalInfoFacadeTests extends ProfileTests {
         assertThat(captureLogs()).contains(
                 "Creating an empty personal info for the current user...",
                 "A personal info object successfully created.");
+    }
+
+    @Test
+    @DisplayName("Update an existing personal info")
+    public void testUpdatingPersonalInfoGivenValidData() {
+        when(infoService.getMe(localUser.getUsername())).thenReturn(localInfo);
+        var data = new PersonalInfoDto().setBio("test bio");
+        data.setUsername(localUser.getUsername());
+        facade.updateMe(data);
+        var captor = ArgumentCaptor.forClass(PersonalInfo.class);
+        verify(infoService).update(captor.capture());
+        var actual = captor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getBio()).isEqualTo(data.getBio());
+        assertThat(captureLogs()).contains(
+                "Saving an updated personal info...",
+                "Personal info successfully updated.");
     }
 }

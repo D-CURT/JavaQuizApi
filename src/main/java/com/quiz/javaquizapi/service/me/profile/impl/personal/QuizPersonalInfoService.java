@@ -66,4 +66,10 @@ public class QuizPersonalInfoService extends BaseMeService<PersonalInfo> impleme
         log.info("Checking if personal info of the user already was created...");
         return cast(getRepository(), PersonalInfoRepository.class).existsByProfileCode(profileCode);
     }
+
+    @Override
+    public void update(PersonalInfo object) {
+        log.info("Saving an updated personal info...");
+        getRepository().save(object);
+    }
 }

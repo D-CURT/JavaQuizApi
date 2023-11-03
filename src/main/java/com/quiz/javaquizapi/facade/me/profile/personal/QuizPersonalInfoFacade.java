@@ -6,8 +6,11 @@ import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.BaseMeFacade;
 import com.quiz.javaquizapi.model.profile.personal.PersonalInfo;
 import com.quiz.javaquizapi.service.me.MeService;
+import com.quiz.javaquizapi.service.me.profile.PersonalInfoService;
 import com.quiz.javaquizapi.service.me.profile.ProfileService;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.quiz.javaquizapi.common.utils.GenericUtils.cast;
 
 @Slf4j
 @Facade
@@ -27,5 +30,14 @@ public class QuizPersonalInfoFacade extends BaseMeFacade<PersonalInfo, PersonalI
         service.create(entity);
         mapper.map(entity, dto);
         log.info("A personal info object successfully created.");
+    }
+
+    @Override
+    public void updateMe(PersonalInfoDto data) {
+        log.info("Saving an updated personal info...");
+        var me = service.getMe(data.getUsername());
+        mapper.map(data, me);
+        cast(service, PersonalInfoService.class).update(me);
+        log.info("Personal info successfully updated.");
     }
 }

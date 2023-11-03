@@ -181,4 +181,17 @@ public class PersonalInfoServiceTests extends ProfileTests {
         assertThat(exception.getArgs()).hasSize(0);
         assertThat(captureLogs()).contains("Fetching a PersonalInfo by profile code...");
     }
+
+    @Test
+    @DisplayName("Update info")
+    public void testUpdatingPersonalInfoGivenValidCode() {
+        var info = new PersonalInfo();
+        service.update(info);
+        var infoCaptor = ArgumentCaptor.forClass(PersonalInfo.class);
+        verify(repository).save(infoCaptor.capture());
+        var actual = infoCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual).isEqualTo(info);
+        assertThat(captureLogs()).contains("Saving an updated personal info...");
+    }
 }
