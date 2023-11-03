@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(name = "password_codes")
+@Table(name = "user_codes")
 @SequenceGenerator(name = "id_gen", sequenceName = "pass_code_sec", allocationSize = 5)
 public class UserUpdateCode extends BaseEntity {
 

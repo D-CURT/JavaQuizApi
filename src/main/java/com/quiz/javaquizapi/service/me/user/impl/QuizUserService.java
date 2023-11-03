@@ -1,5 +1,6 @@
 package com.quiz.javaquizapi.service.me.user.impl;
 
+import com.quiz.javaquizapi.dao.BaseRepository;
 import com.quiz.javaquizapi.dao.UserRepository;
 import com.quiz.javaquizapi.exception.user.UserExistsException;
 import com.quiz.javaquizapi.exception.user.UserNotFoundException;
@@ -8,7 +9,6 @@ import com.quiz.javaquizapi.model.user.Roles;
 import com.quiz.javaquizapi.model.user.User;
 import com.quiz.javaquizapi.service.me.BaseMeService;
 import com.quiz.javaquizapi.service.me.user.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,33 +17,39 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.quiz.javaquizapi.common.utils.GenericUtils.cast;
+
 /**
  * Provides functionality to operate with a {@link User}.
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class QuizUserService extends BaseMeService<User> implements UserService {
-    private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+
+    public QuizUserService(BaseRepository<User> repository, PasswordEncoder passwordEncoder) {
+        super(repository);
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public User getMe(String username) {
         logFetchingEntity();
-        return repository.findByUsername(username)
+        return cast(getRepository(), UserRepository.class)
+                .findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     @Override
     public User get(String code) {
         logFetchingByField(ENTITY_IDENTIFIER);
-        return repository.findByCode(code).orElseThrow(UserNotFoundException::new);
+        return getRepository().findByCode(code).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public void create(User user) {
         log.info("Checking if a user with given username already exists...");
-        if (repository.existsByUsername(user.getUsername())) {
+        if (cast(getRepository(), UserRepository.class).existsByUsername(user.getUsername())) {
             throw new UserExistsException("Unable to create a user, such username already exists", user.getUsername());
         }
         setCodeIfValid(user);
@@ -53,13 +59,13 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         log.info("Applying LOCAL authentication provider...");
         user.setProvider(Providers.LOCAL);
-        repository.save(user);
+        getRepository().save(user);
     }
 
     @Override
     public void update(User user) {
         log.info("Saving an updated user...");
-        repository.save(user);
+        getRepository().save(user);
     }
 
     private void resolveDisplayName(User user) {

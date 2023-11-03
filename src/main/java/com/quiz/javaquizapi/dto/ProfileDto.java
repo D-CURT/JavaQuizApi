@@ -23,6 +23,5 @@ public class ProfileDto extends MeDto {
     private Tiers tier;
     private long score;
     private long rate;
-    private String info;
     private String userCode;
 }

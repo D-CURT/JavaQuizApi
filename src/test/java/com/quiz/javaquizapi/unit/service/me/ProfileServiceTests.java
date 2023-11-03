@@ -97,4 +97,16 @@ public class ProfileServiceTests extends ProfileTests {
         assertThat(exception.getArgs()).contains(localUser.getUsername());
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
+
+    @Test
+    @DisplayName("Update an existing profile")
+    public void testUpdatingProfileGivenExistingProfile() {
+        service.update(getLocalProfile());
+        var profileCaptor = ArgumentCaptor.forClass(Profile.class);
+        verify(repository).save(profileCaptor.capture());
+        var actual = profileCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual).isEqualTo(getLocalProfile());
+        assertThat(captureLogs()).contains("Saving an updated profile...");
+    }
 }
