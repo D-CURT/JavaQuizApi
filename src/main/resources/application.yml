@@ -19,10 +19,11 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
 
-#Optional properties...
-#spring.jpa.properties.hibernate.format_sql=true
-#spring.jpa.show-sql=true
   mail:
     host: smtp.gmail.com
     port: 587
@@ -37,3 +38,5 @@ spring:
             enable: true
         debug: true
     test-connection: false
+  liquibase:
+    enabled: false
