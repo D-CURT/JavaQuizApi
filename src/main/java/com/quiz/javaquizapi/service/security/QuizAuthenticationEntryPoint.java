@@ -9,11 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 /**
@@ -21,7 +20,7 @@ import java.io.IOException;
  */
 @Component
 @RequiredArgsConstructor
-public class QuizAuthenticationEntryPoint implements AuthenticationEntryPoint, AccessDeniedHandler {
+public class QuizAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private final ResponseService responseService;
 
@@ -29,12 +28,6 @@ public class QuizAuthenticationEntryPoint implements AuthenticationEntryPoint, A
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         Response error = responseService.buildError(null, CommonErrors.AUTHENTICATION.name(), CommonErrors.AUTHENTICATION_REQUIRED);
         setResponseBody(response, HttpStatus.UNAUTHORIZED, error);
-    }
-
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessException) throws IOException {
-        Response error = responseService.buildError(null, CommonErrors.ACCESS.name(), CommonErrors.ACCESS_DENIED);
-        setResponseBody(response, HttpStatus.FORBIDDEN, error);
     }
 
     private void setResponseBody(HttpServletResponse response, HttpStatus status, Response body) throws IOException {
