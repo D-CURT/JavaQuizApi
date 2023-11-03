@@ -1,11 +1,14 @@
 package com.quiz.javaquizapi.controller.v0;
 
 import com.quiz.javaquizapi.annotation.AdminAccess;
+import com.quiz.javaquizapi.annotation.MasterAccess;
 import com.quiz.javaquizapi.controller.BaseMeController;
+import com.quiz.javaquizapi.dto.MeDto;
 import com.quiz.javaquizapi.dto.user.UserDto;
 import com.quiz.javaquizapi.dto.user.UserUpdateCodeDto;
 import com.quiz.javaquizapi.facade.me.user.UserFacade;
 import com.quiz.javaquizapi.model.http.Response;
+import com.quiz.javaquizapi.model.user.Roles;
 import com.quiz.javaquizapi.model.user.User;
 import com.quiz.javaquizapi.service.response.ResponseService;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +44,7 @@ public class UserControllerV0 extends BaseMeController<User, UserDto> {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/authorization", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response authorize(@RequestBody @Validated(UserDto.Authorization.class) UserDto data) {
+    public Response authorize(@RequestBody @Validated({MeDto.Create.class, UserDto.Authorization.class}) UserDto data) {
         return create(data);
     }
 
@@ -62,8 +66,17 @@ public class UserControllerV0 extends BaseMeController<User, UserDto> {
         return getResponseService().ok();
     }
 
+    @MasterAccess
+    @PostMapping("/{code}/update")
+    public Response update(@PathVariable String code, @RequestParam(name = "role") Roles role) {
+        var data = new UserDto().setRole(role);
+        data.setCode(code);
+        cast(getFacade(), UserFacade.class).updateRole(data);
+        return getResponseService().ok();
+    }
+
     @AdminAccess
-    @PostMapping("/archive/{code}")
+    @PostMapping("/{code}/archive")
     public Response archive(@PathVariable String code) {
         cast(getFacade(), UserFacade.class).archive(code);
         return getResponseService().ok();

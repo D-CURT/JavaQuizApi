@@ -9,8 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAuthority({" +
-        "T(com.quiz.javaquizapi.model.user.Roles).ADMIN.name(), " +
-        "T(com.quiz.javaquizapi.model.user.Roles).MASTER.name()})")
-public @interface AdminAccess {
+@PreAuthorize("hasAuthority(T(com.quiz.javaquizapi.model.user.Roles).MASTER.name())")
+public @interface MasterAccess {
 }

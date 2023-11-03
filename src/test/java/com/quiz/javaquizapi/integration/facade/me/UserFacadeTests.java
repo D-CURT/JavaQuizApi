@@ -6,6 +6,7 @@ import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.user.QuizUserFacade;
 import com.quiz.javaquizapi.facade.me.user.UserFacade;
 import com.quiz.javaquizapi.integration.ApiIntegrationTests;
+import com.quiz.javaquizapi.model.user.Roles;
 import com.quiz.javaquizapi.model.user.UserUpdateCode;
 import com.quiz.javaquizapi.model.user.User;
 import com.quiz.javaquizapi.model.user.UserUpdateType;
@@ -118,6 +119,21 @@ public class UserFacadeTests extends ApiIntegrationTests {
         assertThat(actualCode.getUser().getUsername()).isEqualTo(expectedUser.getUsername());
         verify(codeService).getMe(dto.getUsername());
         assertThat(captureLogs()).contains("The current user updated successfully.");
+    }
+
+    @Test
+    @DisplayName("Change user role")
+    public void testChangingUserRoleGivenValidCodeAndRole() {
+        when(service.get(localUser.getCode())).thenReturn(localUser);
+        var data = new UserDto().setRole(Roles.ADMIN);
+        data.setCode(localUser.getCode());
+        facade.updateRole(data);
+        var userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(service).update(userCaptor.capture());
+        var actual = userCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getRole()).isEqualTo(data.getRole());
+        assertThat(captureLogs()).contains("User role have been changed to 'ADMIN'.");
     }
 
     @Test

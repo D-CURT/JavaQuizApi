@@ -58,4 +58,6 @@ public interface ResponseService {
     static String getMessage(MessageSource msgSource, String key, String... args) {
         return msgSource.getMessage(key, args, LocaleContextHolder.getLocale());
     }
+
+    MessageSource source();
 }

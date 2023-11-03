@@ -13,5 +13,7 @@ public interface UserFacade extends MeFacade<User, UserDto> {
 
     void updateMe(UserUpdateCodeDto dto);
 
+    void updateRole(UserDto data);
+
     void archive(String code);
 }
