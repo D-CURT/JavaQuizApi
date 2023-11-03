@@ -24,14 +24,20 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class QuizUserService extends BaseMeService<User> implements UserService {
-
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public User getMe(String username) {
-        return getMe(username,
-                name -> repository.findByUsername(name).orElseThrow(() -> new UserNotFoundException(name)));
+        logFetchingEntity();
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+    }
+
+    @Override
+    public User get(String code) {
+        logFetchingByField(ENTITY_IDENTIFIER);
+        return repository.findByCode(code).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
@@ -40,7 +46,7 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
         if (repository.existsByUsername(user.getUsername())) {
             throw new UserExistsException("Unable to create a user, such username already exists", user.getUsername());
         }
-        setCodeIfValid(user, "Unable to create a new user: provided code is malformed, check its format - UUID is required.");
+        setCodeIfValid(user);
         log.info("Applying USER role...");
         Optional.ofNullable(user.getRole()).ifPresentOrElse(user::setRole, () -> user.setRole(Roles.USER));
         resolveDisplayName(user);
@@ -50,7 +56,11 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
         repository.save(user);
     }
 
-    // TODO implement update display name
+    @Override
+    public void update(User user) {
+        log.info("Saving an updated user...");
+        repository.save(user);
+    }
 
     private void resolveDisplayName(User user) {
         log.info("Resolving a new user display name...");
@@ -59,11 +69,5 @@ public class QuizUserService extends BaseMeService<User> implements UserService 
                 .ifPresentOrElse(
                         user::setDisplayName,
                         () -> user.setDisplayName(RandomStringUtils.random(10, true, true)));
-    }
-
-    @Override
-    public User update(User user) {
-        log.info("Updating user info...");
-        return repository.save(user);
     }
 }

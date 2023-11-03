@@ -7,5 +7,4 @@ import com.quiz.javaquizapi.service.me.MeService;
  * Provides functionality to operate with a user {@link Profile}.
  */
 public interface ProfileService extends MeService<Profile> {
-
 }

@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
  * Thrown by the Quiz API when a user with provided username already exists.
  */
 public class UserExistsException extends UserException {
-
     /**
      * This constant provides an error code for the case when a user already exists.
      * <p>The property key is - '<strong>api.errorCode.20</strong>'.

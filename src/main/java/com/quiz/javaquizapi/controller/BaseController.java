@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 @Getter
 @RequiredArgsConstructor
 public abstract class BaseController<D extends BaseDto> {
-
     private final ResponseService responseService;
     private final QuizFacade<D> facade;
 
@@ -39,7 +38,7 @@ public abstract class BaseController<D extends BaseDto> {
      * @return the current username.
      */
     protected String getCurrentUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = null;
         if (principal instanceof DefaultOidcUser oidcUser) {
             username = oidcUser.getEmail();

@@ -12,13 +12,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 /**
- * Contains common fields for all of the entities.
+ * Contains common fields for all the entities.
  */
 @Getter
 @Setter
 @MappedSuperclass
 public abstract class BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_gen")
     private Long id;
@@ -26,7 +25,6 @@ public abstract class BaseEntity {
     /**
      * The common unique field in the <strong>UUID</strong> format.
      * <p>Use this field for database migrations and for the sake of entity search over the database.
-     *
      * @see <a href="https://www.baeldung.com/java-uuid">UUID</a>
      */
     @NotNull

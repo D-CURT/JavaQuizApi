@@ -1,14 +1,13 @@
 package com.quiz.javaquizapi.dao;
 
 import com.quiz.javaquizapi.model.profile.Profile;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
 /**
  * Accumulates all functionality of <strong>the user profile</strong> in the database.
  */
-public interface ProfileRepository extends CrudRepository<Profile, Long> {
+public interface ProfileRepository extends BaseRepository<Profile> {
     /**
      * Finds a user <strong>Profile</strong> by username field of the user linked to this profile.
      *

@@ -1,6 +1,10 @@
 package com.quiz.javaquizapi.service.mail;
 
-public interface MailSenderService {
+import org.springframework.mail.SimpleMailMessage;
 
-    String sendCode(String toEmail);
+/**
+ * Provides ability to send email messages.
+ */
+public interface MailSenderService {
+    void send(SimpleMailMessage message);
 }

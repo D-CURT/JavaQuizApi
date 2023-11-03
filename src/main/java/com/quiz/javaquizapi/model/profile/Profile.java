@@ -19,16 +19,15 @@ import lombok.experimental.Accessors;
 @Table(name = "profiles")
 @SequenceGenerator(name = "id_gen", sequenceName = "profile_seq", allocationSize = 5)
 public class Profile extends BaseEntity {
-
     /**
      * A user score. Scores can be used to accede to new knowledge.
      */
     private Long score;
 
     /**
-     * A user self introduction.
+     * A user personal rate on the platform. A user reputation.
      */
-    private String info;
+    private Long rate;
 
     @Enumerated(EnumType.STRING)
     private Tiers tier;

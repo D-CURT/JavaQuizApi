@@ -6,7 +6,6 @@ import java.lang.reflect.ParameterizedType;
  * Provides utility methods to operate with generics.
  */
 public final class GenericUtils {
-
     /**
      * Search for the first generic type of the accepted object type.
      *
@@ -29,6 +28,15 @@ public final class GenericUtils {
      */
     public static <T, G> Class<G> findSecondGeneric(Class<T> type) {
         return findGeneric(type, 1);
+    }
+
+    @SuppressWarnings("all")
+    public static <T> T cast(Object object, Class<T> type) {
+        try {
+            return (T) object;
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to cast an object", e);
+        }
     }
 
     @SuppressWarnings("all")
