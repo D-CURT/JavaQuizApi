@@ -34,6 +34,11 @@ public class QuizResponseService implements ResponseService {
     }
 
     @Override
+    public MessageSource source() {
+        return msgSource;
+    }
+
+    @Override
     public Response buildError(Object data, String group, String key, String... args) {
         Response response = new Response().setData(data);
         Optional.ofNullable(key)

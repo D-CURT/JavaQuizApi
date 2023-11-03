@@ -52,6 +52,14 @@ public class QuizUserFacade extends BaseMeFacade<User, UserDto> implements UserF
     }
 
     @Override
+    public void updateRole(UserDto data) {
+        var user = service.get(data.getCode());
+        mapper.map(data, user);
+        cast(service, UserService.class).update(user);
+        log.info("User role have been changed to '{}'.", user.getRole());
+    }
+
+    @Override
     public void archive(String code) {
         log.info("Archiving a user...");
         var user = service.get(code);
