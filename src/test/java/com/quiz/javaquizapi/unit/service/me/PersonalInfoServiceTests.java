@@ -45,7 +45,7 @@ public class PersonalInfoServiceTests extends ProfileTests {
     @BeforeEach
     void setUp() {
         super.setUp();
-        service = new QuizPersonalInfoService(profileService, repository);
+        service = new QuizPersonalInfoService(repository, profileService);
     }
 
     @Test

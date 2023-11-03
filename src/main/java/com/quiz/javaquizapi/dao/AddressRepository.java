@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Accumulates all functionality of <strong>the user address</strong> in the database.
  */
-public interface AddressRepository extends BaseRepository<Address>{
+public interface AddressRepository extends BaseRepository<Address> {
     /**
      * Finds an address by an info code.
      *
