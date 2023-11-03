@@ -1,5 +1,6 @@
 package com.quiz.javaquizapi.controller.v0;
 
+import com.quiz.javaquizapi.annotation.AdminAccess;
 import com.quiz.javaquizapi.controller.BaseMeController;
 import com.quiz.javaquizapi.dto.user.UserDto;
 import com.quiz.javaquizapi.dto.user.UserUpdateCodeDto;
@@ -61,6 +62,7 @@ public class UserControllerV0 extends BaseMeController<User, UserDto> {
         return getResponseService().ok();
     }
 
+    @AdminAccess
     @PostMapping("/archive/{code}")
     public Response archive(@PathVariable String code) {
         cast(getFacade(), UserFacade.class).archive(code);
