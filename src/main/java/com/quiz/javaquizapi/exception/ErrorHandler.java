@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,7 +34,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      * @return {@link Response} wrapped by {@link ResponseEntity}.
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleBasicException(Exception exception, WebRequest request) {
+    public ResponseEntity<?> handleUnexpectedException(Exception exception, WebRequest request) {
         log.error("Unexpected error occurred:", exception);
         return handleExceptionInternal(
                 exception,
@@ -72,16 +73,28 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     @SuppressWarnings("ALL")
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
                                                                   HttpHeaders headers, HttpStatusCode status,
                                                                   WebRequest request) {
         FieldError fieldError = exception.getBindingResult().getFieldError();
         String defaultMessage = fieldError.getDefaultMessage();
+        log.error(defaultMessage + "field error");
         return handleExceptionInternal(
                 exception,
                 responseService.buildError(null, CommonErrors.VALIDATION.name(), defaultMessage, fieldError.getField()),
                 new HttpHeaders(),
                 HttpStatus.UNPROCESSABLE_ENTITY,
+                request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException exception, WebRequest request) {
+        log.error(exception.getMessage());
+        return handleExceptionInternal(
+                exception,
+                responseService.buildError(null, CommonErrors.ACCESS.name(), CommonErrors.ACCESS_DENIED),
+                new HttpHeaders(),
+                HttpStatus.FORBIDDEN,
                 request);
     }
 }
