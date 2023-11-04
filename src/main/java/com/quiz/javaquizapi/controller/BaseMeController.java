@@ -1,6 +1,6 @@
 package com.quiz.javaquizapi.controller;
 
-import com.quiz.javaquizapi.common.utils.ReflectionUtils;
+import com.quiz.javaquizapi.common.util.ReflectionUtils;
 import com.quiz.javaquizapi.dto.BaseDto;
 import com.quiz.javaquizapi.dto.MeDto;
 import com.quiz.javaquizapi.dto.reflection.FieldSetter;

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.quiz.javaquizapi.common.utils.GenericUtils.cast;
+import static com.quiz.javaquizapi.common.util.GenericUtils.cast;
 
 /**
  * Provides all endpoints linked to the <strong>User</strong>.

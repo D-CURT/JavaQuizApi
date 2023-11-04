@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Table(name = "addresses")
 @SequenceGenerator(name = "id_gen", sequenceName = "address_sec", allocationSize = 5)
-public class Address extends BaseEntity {
+public class Address extends BaseEntity implements Information<Address> {
     private String street;
     private String postalCode;
     private String city;
@@ -25,4 +25,10 @@ public class Address extends BaseEntity {
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private PersonalInfo info;
+
+    @Override
+    public Address setInfo(PersonalInfo info) {
+        this.info = info;
+        return this;
+    }
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.quiz.javaquizapi.common.utils.GenericUtils.cast;
+import static com.quiz.javaquizapi.common.util.GenericUtils.cast;
 
 /**
  * Provides functionality to operate with a user social media objects {@link SocialMedia}.

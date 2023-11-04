@@ -12,7 +12,7 @@ import com.quiz.javaquizapi.service.me.profile.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static com.quiz.javaquizapi.common.utils.GenericUtils.cast;
+import static com.quiz.javaquizapi.common.util.GenericUtils.cast;
 
 /**
  * Provides functionality to operate with a personal info of a user {@link PersonalInfo}.

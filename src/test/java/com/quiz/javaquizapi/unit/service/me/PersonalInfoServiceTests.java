@@ -1,6 +1,6 @@
 package com.quiz.javaquizapi.unit.service.me;
 
-import com.quiz.javaquizapi.common.utils.ValidationUtils;
+import com.quiz.javaquizapi.common.util.ValidationUtils;
 import com.quiz.javaquizapi.dao.PersonalInfoRepository;
 import com.quiz.javaquizapi.exception.profile.ProfileNotFoundException;
 import com.quiz.javaquizapi.exception.profile.personal.PersonalInfoExistsException;

@@ -1,9 +1,10 @@
-package com.quiz.javaquizapi.dto;
+package com.quiz.javaquizapi.dto.personal;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.quiz.javaquizapi.annotation.Me;
+import com.quiz.javaquizapi.dto.MeDto;
 import com.quiz.javaquizapi.model.profile.personal.PersonalInfo;
 import lombok.Getter;
 import lombok.Setter;

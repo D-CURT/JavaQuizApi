@@ -11,7 +11,7 @@ import com.quiz.javaquizapi.service.me.user.UserUpdateCodeService;
 import com.quiz.javaquizapi.service.me.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.quiz.javaquizapi.common.utils.GenericUtils.cast;
+import static com.quiz.javaquizapi.common.util.GenericUtils.cast;
 
 /**
  * Provides intermediary operations related to a {@link User}.

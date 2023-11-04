@@ -1,6 +1,6 @@
 package com.quiz.javaquizapi.facade;
 
-import com.quiz.javaquizapi.common.utils.GenericUtils;
+import com.quiz.javaquizapi.common.util.GenericUtils;
 import com.quiz.javaquizapi.dto.BaseDto;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,12 +1,15 @@
 package com.quiz.javaquizapi.integration.facade.me;
 
-import com.quiz.javaquizapi.dto.PersonalInfoDto;
+import com.quiz.javaquizapi.dto.personal.AddressDto;
+import com.quiz.javaquizapi.dto.personal.PersonalInfoDto;
 import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.profile.personal.PersonalInfoFacade;
 import com.quiz.javaquizapi.facade.me.profile.personal.QuizPersonalInfoFacade;
+import com.quiz.javaquizapi.model.profile.personal.Address;
 import com.quiz.javaquizapi.model.profile.personal.PersonalInfo;
 import com.quiz.javaquizapi.service.me.profile.PersonalInfoService;
 import com.quiz.javaquizapi.service.me.profile.ProfileService;
+import com.quiz.javaquizapi.service.me.profile.impl.personal.QuizAddressService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +35,8 @@ public class PersonalInfoFacadeTests extends ProfileTests {
     private PersonalInfoService infoService;
     @Mock
     private ProfileService profileService;
+    @Mock
+    private QuizAddressService addressService;
     @Autowired
     private Mapper mapper;
     private PersonalInfoFacade facade;
@@ -40,7 +45,7 @@ public class PersonalInfoFacadeTests extends ProfileTests {
     @BeforeEach
     void setUp() {
         super.setUp();
-        facade = new QuizPersonalInfoFacade(infoService, mapper, profileService);
+        facade = new QuizPersonalInfoFacade(infoService, mapper, profileService, addressService);
     }
 
     @Test
@@ -84,5 +89,35 @@ public class PersonalInfoFacadeTests extends ProfileTests {
         assertThat(captureLogs()).contains(
                 "Saving an updated personal info...",
                 "Personal info successfully updated.");
+    }
+
+    @Test
+    @DisplayName("Create user address")
+    public void testCreatingUserAddressGivenValidData() {
+        var data = new AddressDto().setCity("new").setInfoCode(localInfo.getCode());
+        when(addressService.getEntityType()).thenReturn(Address.class);
+        facade.updateAddress(data);
+        var addressCaptor = ArgumentCaptor.forClass(Address.class);
+        verify(addressService).update(addressCaptor.capture());
+        var actual = addressCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getCity()).isEqualTo(data.getCity());
+        assertThat(captureLogs()).contains("Saving an instance of Address...", "Address saved successfully.");
+    }
+
+    @Test
+    @DisplayName("Update user address")
+    public void testUpdatingUserAddressGivenValidData() {
+        var data = new AddressDto().setCity("new").setInfoCode(localInfo.getCode());
+        data.setCode(UUID.randomUUID().toString());
+        var entity = new Address().setCity("old").setInfo(localInfo);
+        when(addressService.get(data.getCode())).thenReturn(entity);
+        facade.updateAddress(data);
+        var addressCaptor = ArgumentCaptor.forClass(Address.class);
+        verify(addressService).update(addressCaptor.capture());
+        var actual = addressCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getCity()).isEqualTo(data.getCity());
+        assertThat(captureLogs()).contains("Saving an instance of Address...", "Address saved successfully.");
     }
 }
