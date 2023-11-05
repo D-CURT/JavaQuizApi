@@ -6,7 +6,6 @@ import com.quiz.javaquizapi.exception.profile.personal.SocialMediaAlreadyExistsE
 import com.quiz.javaquizapi.exception.profile.personal.SocialMediaNotFoundException;
 import com.quiz.javaquizapi.model.profile.personal.SocialMedia;
 import com.quiz.javaquizapi.model.profile.personal.SocialType;
-import com.quiz.javaquizapi.service.BaseQuizService;
 import com.quiz.javaquizapi.service.BaseUpdatableService;
 import com.quiz.javaquizapi.service.me.profile.SocialMediaService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,16 +30,6 @@ public class QuizSocialMediaService extends BaseUpdatableService<SocialMedia> im
     public SocialMedia get(String code) {
         logFetchingEntity();
         return getRepository().findByCode(code).orElseThrow(SocialMediaNotFoundException::new);
-    }
-
-    @Override
-    public void create(SocialMedia entity) {
-        log.info("Checking if a social media object already exist...");
-        if (cast(getRepository(), SocialMediaRepository.class).existsByContactCodeAndType(entity.getContact().getCode(), entity.getType())) {
-            throw new SocialMediaAlreadyExistsException();
-        }
-        setCodeIfValid(entity);
-        getRepository().save(entity);
     }
 
     @Override
