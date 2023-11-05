@@ -39,8 +39,6 @@ public class PersonalInfoFacadeTests extends ProfileTests {
         localInfo.setCode(UUID.randomUUID().toString());
     }
 
-
-
     @Mock
     private PersonalInfoService infoService;
     @Mock
