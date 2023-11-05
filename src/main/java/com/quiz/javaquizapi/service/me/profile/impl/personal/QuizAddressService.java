@@ -38,7 +38,6 @@ public class QuizAddressService extends BaseUpdatableService<Address> implements
 
     @Override
     public void update(Address object) {
-        log.info("Saving an updated address...");
         setCodeIfValid(object);
         getRepository().save(object);
     }

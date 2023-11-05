@@ -1,15 +1,21 @@
 package com.quiz.javaquizapi.integration.facade.me;
 
 import com.quiz.javaquizapi.dto.personal.AddressDto;
+import com.quiz.javaquizapi.dto.personal.ContactDto;
 import com.quiz.javaquizapi.dto.personal.PersonalInfoDto;
+import com.quiz.javaquizapi.dto.personal.SocialMediaDto;
 import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.profile.personal.PersonalInfoFacade;
 import com.quiz.javaquizapi.facade.me.profile.personal.QuizPersonalInfoFacade;
 import com.quiz.javaquizapi.model.profile.personal.Address;
+import com.quiz.javaquizapi.model.profile.personal.Contact;
 import com.quiz.javaquizapi.model.profile.personal.PersonalInfo;
+import com.quiz.javaquizapi.model.profile.personal.SocialMedia;
 import com.quiz.javaquizapi.service.me.profile.PersonalInfoService;
 import com.quiz.javaquizapi.service.me.profile.ProfileService;
 import com.quiz.javaquizapi.service.me.profile.impl.personal.QuizAddressService;
+import com.quiz.javaquizapi.service.me.profile.impl.personal.QuizContactService;
+import com.quiz.javaquizapi.service.me.profile.impl.personal.QuizSocialMediaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,10 +32,14 @@ import static org.mockito.Mockito.when;
 @DisplayName("Personal info facade tests")
 public class PersonalInfoFacadeTests extends ProfileTests {
     private final PersonalInfo localInfo = new PersonalInfo().setProfile(getLocalProfile());
+    private final Contact localContact = new Contact().setInfo(localInfo);
 
     {
+        localContact.setCode(UUID.randomUUID().toString());
         localInfo.setCode(UUID.randomUUID().toString());
     }
+
+
 
     @Mock
     private PersonalInfoService infoService;
@@ -37,6 +47,10 @@ public class PersonalInfoFacadeTests extends ProfileTests {
     private ProfileService profileService;
     @Mock
     private QuizAddressService addressService;
+    @Mock
+    private QuizContactService contactService;
+    @Mock
+    private QuizSocialMediaService mediaService;
     @Autowired
     private Mapper mapper;
     private PersonalInfoFacade facade;
@@ -45,7 +59,13 @@ public class PersonalInfoFacadeTests extends ProfileTests {
     @BeforeEach
     void setUp() {
         super.setUp();
-        facade = new QuizPersonalInfoFacade(infoService, mapper, profileService, addressService);
+        facade = new QuizPersonalInfoFacade(
+                infoService,
+                mapper,
+                profileService,
+                addressService,
+                contactService,
+                mediaService);
     }
 
     @Test
@@ -119,5 +139,65 @@ public class PersonalInfoFacadeTests extends ProfileTests {
         assertThat(actual).isNotNull();
         assertThat(actual.getCity()).isEqualTo(data.getCity());
         assertThat(captureLogs()).contains("Saving an instance of Address...", "Address saved successfully.");
+    }
+
+    @Test
+    @DisplayName("Create user contact")
+    public void testCreatingUserContactGivenValidData() {
+        var data = new ContactDto().setEmail("new").setInfoCode(localInfo.getCode());
+        when(contactService.getEntityType()).thenReturn(Contact.class);
+        facade.updateContact(data);
+        var contactCaptor = ArgumentCaptor.forClass(Contact.class);
+        verify(contactService).update(contactCaptor.capture());
+        var actual = contactCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getEmail()).isEqualTo(data.getEmail());
+        assertThat(captureLogs()).contains("Saving an instance of Contact...", "Contact saved successfully.");
+    }
+
+    @Test
+    @DisplayName("Update user contact")
+    public void testUpdatingUserContactGivenValidData() {
+        var data = new ContactDto().setEmail("new").setInfoCode(localInfo.getCode());
+        data.setCode(UUID.randomUUID().toString());
+        var entity = new Contact().setEmail("old").setInfo(localInfo);
+        when(contactService.get(data.getCode())).thenReturn(entity);
+        facade.updateContact(data);
+        var contactCaptor = ArgumentCaptor.forClass(Contact.class);
+        verify(contactService).update(contactCaptor.capture());
+        var actual = contactCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getEmail()).isEqualTo(data.getEmail());
+        assertThat(captureLogs()).contains("Saving an instance of Contact...", "Contact saved successfully.");
+    }
+
+    @Test
+    @DisplayName("Create user contact social media")
+    public void testCreatingUserContactSocialMediaGivenValidData() {
+        var data = new SocialMediaDto().setAccountName("new").setContactCode(localContact.getCode());
+        when(mediaService.getEntityType()).thenReturn(SocialMedia.class);
+        facade.updateSocialMedia(data);
+        var mediaCaptor = ArgumentCaptor.forClass(SocialMedia.class);
+        verify(mediaService).update(mediaCaptor.capture());
+        var actual = mediaCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getAccountName()).isEqualTo(data.getAccountName());
+        assertThat(captureLogs()).contains("Saving an instance of Social Media...", "Social Media saved successfully.");
+    }
+
+    @Test
+    @DisplayName("Update user contact social media")
+    public void testUpdatingUserContactSocialMediaGivenValidData() {
+        var data = new SocialMediaDto().setAccountName("new").setContactCode(localContact.getCode());
+        data.setCode(UUID.randomUUID().toString());
+        var entity = new SocialMedia().setAccountName("old").setContact(localContact);
+        when(mediaService.get(data.getCode())).thenReturn(entity);
+        facade.updateSocialMedia(data);
+        var mediaCaptor = ArgumentCaptor.forClass(SocialMedia.class);
+        verify(mediaService).update(mediaCaptor.capture());
+        var actual = mediaCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual.getAccountName()).isEqualTo(data.getAccountName());
+        assertThat(captureLogs()).contains("Saving an instance of Social Media...", "Social Media saved successfully.");
     }
 }

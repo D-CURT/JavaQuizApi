@@ -14,17 +14,11 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AddressDto extends BaseDto {
+public class ContactDto extends BaseDto {
     @NotBlank(groups = Create.class, message = "api.errorCode.40")
-    private String street;
+    private String email;
     @NotBlank(groups = Create.class, message = "api.errorCode.40")
-    private String postalCode;
-    @NotBlank(groups = Create.class, message = "api.errorCode.40")
-    private String city;
-    @NotBlank(groups = Create.class, message = "api.errorCode.40")
-    private String region;
-    @NotBlank(groups = Create.class, message = "api.errorCode.40")
-    private String country;
+    private String phone;
     @NotBlank(groups = {Create.class, Update.class}, message = "api.errorCode.40")
     private String infoCode;
 }

@@ -20,4 +20,10 @@ public abstract class BaseDto implements Serializable {
      * if an entity creation succeeded.
      */
     private String code;
+
+    public interface Create {
+    }
+
+    public interface Update {
+    }
 }
