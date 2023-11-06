@@ -1,5 +1,6 @@
-package com.quiz.javaquizapi.common.utils;
+package com.quiz.javaquizapi.common.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
 /**
@@ -10,8 +11,8 @@ public final class GenericUtils {
      * Search for the first generic type of the accepted object type.
      *
      * @param type object type to find a generic in it.
-     * @param <T> object type.
-     * @param <G> generic type.
+     * @param <T>  object type.
+     * @param <G>  generic type.
      * @return the first generic of {@link G} type
      */
     public static <T, G> Class<G> findFirstGeneric(Class<T> type) {
@@ -22,8 +23,8 @@ public final class GenericUtils {
      * Search for the second generic type of the accepted object type.
      *
      * @param type object type to find a generic in it.
-     * @param <T> object type.
-     * @param <G> generic type.
+     * @param <T>  object type.
+     * @param <G>  generic type.
      * @return the second generic of {@link G} type
      */
     public static <T, G> Class<G> findSecondGeneric(Class<T> type) {
@@ -46,6 +47,15 @@ public final class GenericUtils {
                     .getActualTypeArguments()[index].getTypeName());
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Unable to find generic by index", e);
+        }
+    }
+
+    public static <T> T create(Class<T> type) {
+        try {
+            return type.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
+            throw new IllegalStateException("Unable to construct an object", e);
         }
     }
 }

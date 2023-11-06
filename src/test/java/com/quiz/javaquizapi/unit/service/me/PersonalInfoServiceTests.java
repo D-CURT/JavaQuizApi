@@ -1,6 +1,6 @@
 package com.quiz.javaquizapi.unit.service.me;
 
-import com.quiz.javaquizapi.common.utils.ValidationUtils;
+import com.quiz.javaquizapi.common.util.ValidationUtils;
 import com.quiz.javaquizapi.dao.PersonalInfoRepository;
 import com.quiz.javaquizapi.exception.profile.ProfileNotFoundException;
 import com.quiz.javaquizapi.exception.profile.personal.PersonalInfoExistsException;
@@ -180,5 +180,18 @@ public class PersonalInfoServiceTests extends ProfileTests {
         assertThat(exception.getCode()).isEqualTo(PersonalInfoNotFoundException.PERSONAL_INFO_NO_ARGS_ERROR_CODE);
         assertThat(exception.getArgs()).hasSize(0);
         assertThat(captureLogs()).contains("Fetching a PersonalInfo by profile code...");
+    }
+
+    @Test
+    @DisplayName("Update info")
+    public void testUpdatingPersonalInfoGivenValidCode() {
+        var info = new PersonalInfo();
+        service.update(info);
+        var infoCaptor = ArgumentCaptor.forClass(PersonalInfo.class);
+        verify(repository).save(infoCaptor.capture());
+        var actual = infoCaptor.getValue();
+        assertThat(actual).isNotNull();
+        assertThat(actual).isEqualTo(info);
+        assertThat(captureLogs()).contains("Saving an updated personal info...");
     }
 }

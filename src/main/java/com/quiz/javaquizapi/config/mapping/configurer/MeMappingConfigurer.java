@@ -1,7 +1,7 @@
 package com.quiz.javaquizapi.config.mapping.configurer;
 
 import com.quiz.javaquizapi.annotation.Me;
-import com.quiz.javaquizapi.common.utils.ReflectionUtils;
+import com.quiz.javaquizapi.common.util.ReflectionUtils;
 import com.quiz.javaquizapi.config.mapping.converter.PostMeConverter;
 import com.quiz.javaquizapi.dto.MeDto;
 import org.modelmapper.ModelMapper;

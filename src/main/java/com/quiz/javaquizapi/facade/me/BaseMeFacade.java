@@ -1,6 +1,6 @@
 package com.quiz.javaquizapi.facade.me;
 
-import com.quiz.javaquizapi.common.utils.GenericUtils;
+import com.quiz.javaquizapi.common.util.GenericUtils;
 import com.quiz.javaquizapi.dto.BaseDto;
 import com.quiz.javaquizapi.facade.BaseQuizFacade;
 import com.quiz.javaquizapi.facade.mapping.Mapper;

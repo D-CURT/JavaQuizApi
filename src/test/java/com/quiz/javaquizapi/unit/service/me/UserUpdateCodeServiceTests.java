@@ -1,7 +1,7 @@
 package com.quiz.javaquizapi.unit.service.me;
 
 import com.quiz.javaquizapi.ApiTests;
-import com.quiz.javaquizapi.common.utils.ValidationUtils;
+import com.quiz.javaquizapi.common.util.ValidationUtils;
 import com.quiz.javaquizapi.dao.UserUpdateCodeRepository;
 import com.quiz.javaquizapi.exception.user.UserUpdateCodeNotFoundException;
 import com.quiz.javaquizapi.model.profile.personal.PersonalInfo;

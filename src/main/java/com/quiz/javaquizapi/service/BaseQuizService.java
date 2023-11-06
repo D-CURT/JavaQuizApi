@@ -1,7 +1,7 @@
 package com.quiz.javaquizapi.service;
 
-import com.quiz.javaquizapi.common.utils.GenericUtils;
-import com.quiz.javaquizapi.common.utils.ValidationUtils;
+import com.quiz.javaquizapi.common.util.GenericUtils;
+import com.quiz.javaquizapi.common.util.ValidationUtils;
 import com.quiz.javaquizapi.dao.BaseRepository;
 import com.quiz.javaquizapi.model.BaseEntity;
 import lombok.Getter;
