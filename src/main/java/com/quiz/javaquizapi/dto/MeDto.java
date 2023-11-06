@@ -32,7 +32,4 @@ public abstract class MeDto extends BaseDto implements Nullifiable {
         username = null;
         return this;
     }
-
-    public interface Create {
-    }
 }

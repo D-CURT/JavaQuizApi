@@ -1,4 +1,4 @@
-package com.quiz.javaquizapi.common.utils;
+package com.quiz.javaquizapi.common.util;
 
 import com.quiz.javaquizapi.exception.ValidationException;
 import lombok.AccessLevel;

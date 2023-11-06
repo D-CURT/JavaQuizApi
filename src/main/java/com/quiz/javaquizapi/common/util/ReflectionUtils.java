@@ -1,4 +1,4 @@
-package com.quiz.javaquizapi.common.utils;
+package com.quiz.javaquizapi.common.util;
 
 import com.quiz.javaquizapi.dto.reflection.FieldSetter;
 import lombok.AccessLevel;
