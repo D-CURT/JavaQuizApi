@@ -14,10 +14,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +30,11 @@ import static com.quiz.javaquizapi.common.util.GenericUtils.cast;
 public class PersonalInfoControllerV0 extends BaseMeController<PersonalInfo, PersonalInfoDto> {
     public PersonalInfoControllerV0(ResponseService responseService, PersonalInfoFacade facade) {
         super(responseService, facade);
+    }
+
+    @GetMapping("/full")
+    public Response getFull(@RequestParam(name = "profile-code") String profileCode) {
+        return getResponseService().build(cast(getFacade(), PersonalInfoFacade.class).getFull(profileCode));
     }
 
     @ResponseStatus(HttpStatus.CREATED)

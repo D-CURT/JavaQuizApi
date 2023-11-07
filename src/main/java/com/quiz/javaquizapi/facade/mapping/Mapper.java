@@ -2,6 +2,9 @@ package com.quiz.javaquizapi.facade.mapping;
 
 import com.quiz.javaquizapi.model.BaseEntity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Converts JPA entities into DTOs and back.
  */
@@ -25,4 +28,19 @@ public interface Mapper {
      * @param destination destination object.
      */
     void map(Object source, Object destination);
+
+    /**
+     * Does lists conversion.
+     * @param source source list type.
+     * @param targetClass target list type.
+     * @param <S> source object type.
+     * @param <T> target object type.
+     * @return converted list.
+     */
+    default <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
+        return source
+                .stream()
+                .map(element -> map(element, targetClass))
+                .collect(Collectors.toList());
+    }
 }

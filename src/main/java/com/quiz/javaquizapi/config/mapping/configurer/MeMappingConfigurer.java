@@ -22,6 +22,8 @@ public class MeMappingConfigurer implements MappingConfigurer {
     public void configure(ModelMapper mapper) {
         ReflectionUtils.reflections("dto")
                 .getSubTypesOf(MeDto.class)
+                .stream()
+                .filter(dto -> dto.isAnnotationPresent(Me.class))
                 .forEach(dto -> ReflectionUtils.getAnnotation(dto, Me.class)
                         .map(me -> TypeMapAggregator.of(me.value(), dto))
                         .map(aggregator -> aggregator.apply(mapper))
