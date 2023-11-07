@@ -1,6 +1,5 @@
-package com.quiz.javaquizapi.controller.v0;
+package com.quiz.javaquizapi.controller.v0.profile;
 
-import com.quiz.javaquizapi.controller.BaseMeController;
 import com.quiz.javaquizapi.dto.ProfileDto;
 import com.quiz.javaquizapi.facade.me.profile.ProfileFacade;
 import com.quiz.javaquizapi.model.http.Response;
@@ -10,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <p>Version: <strong>V0</strong>.
  */
 @RestController
-@RequestMapping("/profile")
-public class ProfileControllerV0 extends BaseMeController<Profile, ProfileDto> {
+public class ProfileControllerV0 extends BaseProfileController<Profile, ProfileDto> {
     public ProfileControllerV0(ResponseService responseService, ProfileFacade facade) {
         super(responseService, facade);
     }
