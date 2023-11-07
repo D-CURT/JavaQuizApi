@@ -5,7 +5,9 @@ import com.quiz.javaquizapi.common.util.GenericUtils;
 import com.quiz.javaquizapi.dto.BaseDto;
 import com.quiz.javaquizapi.dto.personal.AddressDto;
 import com.quiz.javaquizapi.dto.personal.ContactDto;
+import com.quiz.javaquizapi.dto.personal.ContactFullDto;
 import com.quiz.javaquizapi.dto.personal.PersonalInfoDto;
+import com.quiz.javaquizapi.dto.personal.PersonalInfoFullDto;
 import com.quiz.javaquizapi.dto.personal.SocialMediaDto;
 import com.quiz.javaquizapi.facade.mapping.Mapper;
 import com.quiz.javaquizapi.facade.me.BaseMeFacade;
@@ -52,6 +54,19 @@ public class QuizPersonalInfoFacade extends BaseMeFacade<PersonalInfo, PersonalI
         this.addressService = addressService;
         this.contactService = contactService;
         this.mediaService = mediaService;
+    }
+
+    @Override
+    public PersonalInfoFullDto getFull(String profileCode) {
+        log.info("Fetching a full personal info...");
+        var info = cast(service, PersonalInfoService.class).getPersonalInfoByProfileCode(profileCode);
+        var dto = mapper.map(info, PersonalInfoFullDto.class);
+        var contact = contactService.getByPersonalInfoCode(info.getCode());
+        dto.setContact(mapper.map(contact, ContactFullDto.class));
+        dto.getContact()
+                .setMedias(mapper.mapList(mediaService.getByContactCode(contact.getCode()), SocialMediaDto.class));
+        dto.setAddresses(mapper.mapList(addressService.getByPersonalInfoCode(info.getCode()), AddressDto.class));
+        return dto;
     }
 
     @Override

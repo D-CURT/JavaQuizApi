@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.quiz.javaquizapi.dto.BaseDto;
 import com.quiz.javaquizapi.model.profile.personal.SocialType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -20,7 +21,7 @@ public class SocialMediaDto extends BaseDto {
     private String accountName;
     @NotBlank(groups = Create.class, message = "api.errorCode.40")
     private String link;
-    @NotBlank(groups = Create.class, message = "api.errorCode.40")
+    @NotNull(groups = {Create.class, Update.class}, message = "api.errorCode.40")
     private SocialType type;
     @NotBlank(groups = {Create.class, Update.class}, message = "api.errorCode.40")
     private String contactCode;

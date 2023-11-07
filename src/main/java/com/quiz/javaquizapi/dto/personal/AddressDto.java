@@ -27,4 +27,5 @@ public class AddressDto extends BaseDto {
     private String country;
     @NotBlank(groups = {Create.class, Update.class}, message = "api.errorCode.40")
     private String infoCode;
+    private String formattedAddress;
 }

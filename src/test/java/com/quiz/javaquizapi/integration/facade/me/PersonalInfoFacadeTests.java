@@ -11,6 +11,7 @@ import com.quiz.javaquizapi.model.profile.personal.Address;
 import com.quiz.javaquizapi.model.profile.personal.Contact;
 import com.quiz.javaquizapi.model.profile.personal.PersonalInfo;
 import com.quiz.javaquizapi.model.profile.personal.SocialMedia;
+import com.quiz.javaquizapi.model.profile.personal.SocialType;
 import com.quiz.javaquizapi.service.me.profile.PersonalInfoService;
 import com.quiz.javaquizapi.service.me.profile.ProfileService;
 import com.quiz.javaquizapi.service.me.profile.impl.personal.QuizAddressService;
@@ -23,8 +24,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.UUID;
 
+import static com.google.common.base.CaseFormat.LOWER_CAMEL;
+import static com.google.common.base.CaseFormat.UPPER_CAMEL;
+import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,6 +81,50 @@ public class PersonalInfoFacadeTests extends ProfileTests {
         assertThat(me.getProfileCode()).isEqualTo(getLocalProfile().getCode());
         assertThat(me.getBio()).isEqualTo(localInfo.getBio());
         verify(infoService).getMe(localUser.getUsername());
+    }
+
+    @Test
+    @DisplayName("Fetch full by profile code")
+    public void testFetchingFullGivenValidProfileCode() {
+        when(infoService.getPersonalInfoByProfileCode(getLocalProfile().getCode()))
+                .thenReturn(localInfo.setBio("testBio"));
+        when(contactService.getByPersonalInfoCode(localInfo.getCode()))
+                .thenReturn(localContact.setEmail("test@mail.com").setPhone("+7734223452398"));
+        when(mediaService.getByContactCode(localContact.getCode()))
+                .thenReturn(List.of(
+                        buildMedia(SocialType.INSTAGRAM, localContact),
+                        buildMedia(SocialType.VK, localContact)));
+        when(addressService.getByPersonalInfoCode(localInfo.getCode()))
+                .thenReturn(List.of(
+                        new Address()
+                                .setCountry("Kazakhstan")
+                                .setCity("Almaty")
+                                .setStreet("Abay 31/35")
+                                .setRegion("Almaty")
+                                .setPostalCode("A25D4T2")
+                                .setInfo(localInfo),
+                        new Address()
+                                .setCountry("Kazakhstan")
+                                .setCity("Almaty")
+                                .setStreet("Valihanov 124/36")
+                                .setRegion("Almaty")
+                                .setPostalCode("A26F4A2")
+                                .setInfo(localInfo)));
+        var dto = facade.getFull(getLocalProfile().getCode());
+        verify(infoService).getPersonalInfoByProfileCode(getLocalProfile().getCode());
+        verify(contactService).getByPersonalInfoCode(localInfo.getCode());
+        verify(addressService).getByPersonalInfoCode(localInfo.getCode());
+        verify(mediaService).getByContactCode(localContact.getCode());
+        assertThat(dto).isNotNull();
+        assertThat(dto.getBio()).isEqualTo(localInfo.getBio());
+        assertThat(dto.getContact()).isNotNull();
+        assertThat(dto.getContact().getCode()).isEqualTo(localContact.getCode());
+        assertThat(dto.getContact().getInfoCode()).isEqualTo(localInfo.getCode());
+        assertThat(dto.getContact().getEmail()).isEqualTo(localContact.getEmail());
+        assertThat(dto.getContact().getPhone()).isEqualTo(localContact.getPhone());
+        assertThat(dto.getContact().getMedias()).hasSize(2);
+        assertThat(dto.getAddresses()).hasSize(2);
+        assertThat(captureLogs()).contains("Fetching a full personal info...");
     }
 
     @Test
@@ -197,5 +246,17 @@ public class PersonalInfoFacadeTests extends ProfileTests {
         assertThat(actual).isNotNull();
         assertThat(actual.getAccountName()).isEqualTo(data.getAccountName());
         assertThat(captureLogs()).contains("Saving an instance of Social Media...", "Social Media saved successfully.");
+    }
+
+    private SocialMedia buildMedia(SocialType type, Contact contact) {
+        var name = UPPER_UNDERSCORE.to(UPPER_CAMEL, type.name());
+        var accountName = "test".concat(name);
+        var media = new SocialMedia()
+                .setType(type)
+                .setAccountName(accountName)
+                .setLink(UPPER_UNDERSCORE.to(LOWER_CAMEL, name).concat(".com/").concat(accountName))
+                .setContact(contact);
+        media.setCode(UUID.randomUUID().toString());
+        return media;
     }
 }

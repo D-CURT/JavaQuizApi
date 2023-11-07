@@ -1,5 +1,6 @@
 package com.quiz.javaquizapi.exception;
 
+import com.google.common.base.CaseFormat;
 import com.quiz.javaquizapi.model.http.CommonErrors;
 import com.quiz.javaquizapi.model.http.Response;
 import com.quiz.javaquizapi.service.response.ResponseService;
@@ -96,10 +97,11 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                                                                WebRequest request) {
         FieldError fieldError = exception.getBindingResult().getFieldError();
         String defaultMessage = fieldError.getDefaultMessage();
-        log.error("Field '{}' validation failed", fieldError.getField());
+        String field = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, fieldError.getField());
+        log.error("Field '{}' validation failed", field);
         return handleExceptionInternal(
                 exception,
-                responseService.buildError(null, CommonErrors.VALIDATION.name(), defaultMessage, fieldError.getField()),
+                responseService.buildError(null, CommonErrors.VALIDATION.name(), defaultMessage, field),
                 new HttpHeaders(),
                 HttpStatus.UNPROCESSABLE_ENTITY,
                 request);
