@@ -15,6 +15,6 @@ public class AddressMappingConfigurer implements MappingConfigurer {
     public void configure(ModelMapper mapper) {
         TypeMapAggregator.of(Address.class, AddressDto.class)
                 .apply(mapper)
-                .aggregate(map -> map.setPostConverter(new PostAddressConverter()));
+                .postConvert(PostAddressConverter::new);
     }
 }

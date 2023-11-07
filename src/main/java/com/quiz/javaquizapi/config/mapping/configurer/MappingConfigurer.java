@@ -4,11 +4,13 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public interface MappingConfigurer {
     /**
@@ -54,6 +56,16 @@ public interface MappingConfigurer {
             Optional.ofNullable(mapper.getTypeMap(source, destination))
                     .or(() -> Optional.of(mapper.createTypeMap(source, destination)))
                     .ifPresent(consumer);
+        }
+
+        /**
+         * Applies an accepted post converter.
+         * @implNote  <strong>aggregate</strong> method docs.
+         * @param supplier post converter builder.
+         * @param <T> converter type.
+         */
+        <T extends Converter<S, D>> void postConvert(Supplier<T> supplier) {
+            aggregate(mapping -> mapping.setPostConverter(supplier.get()));
         }
     }
 }

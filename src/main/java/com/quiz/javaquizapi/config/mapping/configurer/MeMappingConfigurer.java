@@ -27,6 +27,6 @@ public class MeMappingConfigurer implements MappingConfigurer {
                 .forEach(dto -> ReflectionUtils.getAnnotation(dto, Me.class)
                         .map(me -> TypeMapAggregator.of(me.value(), dto))
                         .map(aggregator -> aggregator.apply(mapper))
-                        .ifPresent(agr -> agr.aggregate(map -> map.setPostConverter(new PostMeConverter<>()))));
+                        .ifPresent(agr -> agr.postConvert(PostMeConverter::new)));
     }
 }
