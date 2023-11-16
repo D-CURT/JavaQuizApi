@@ -6,8 +6,6 @@ import com.box.sdk.BoxFile;
 import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxItem;
 import com.quiz.javaquizapi.exception.box.BoxApiException;
-import com.quiz.javaquizapi.exception.box.BoxItemNotFoundException;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,9 +23,7 @@ public class QuizBoxClient implements BoxClient {
     public static final String ROOT_NAME = "Java Quiz API";
     public static final String[] BASIC_INFO_FIELDS = {"id", "name"};
     public static final int BOX_ITEM_ALREADY_EXIST_CODE = 409;
-
     private final BoxAPIConnection api;
-    @Getter
     private BoxFolder root;
 
     public QuizBoxClient init() {
@@ -56,9 +52,7 @@ public class QuizBoxClient implements BoxClient {
     @Override
     public BoxItem.Info upload(MultipartFile file) {
         try (var stream = file.getInputStream()) {
-            return findRoot()
-                    .orElseThrow(() -> new BoxItemNotFoundException(file.getName()))
-                    .uploadFile(stream, file.getName());
+            return root.uploadFile(stream, file.getName());
         } catch (Exception e) {
             throw new BoxApiException(e.getMessage());
         }
