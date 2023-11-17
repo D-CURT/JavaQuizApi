@@ -6,11 +6,14 @@ import com.box.sdk.BoxFile;
 import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxItem;
 import com.quiz.javaquizapi.exception.box.BoxApiException;
+import com.quiz.javaquizapi.exception.box.BoxFileEmptyContentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -40,18 +43,24 @@ public class QuizBoxClient implements BoxClient {
 
     @Override
     public OutputStream download(String id) {
+        log.info("Downloading a Box file with ID '{}'...", id);
         var stream = new ByteArrayOutputStream();
         try {
             new BoxFile(api, id).download(stream);
         } catch (Exception e) {
             throw new BoxApiException(e.getMessage());
         }
+        log.info("File download succeeded.");
         return stream;
     }
 
     @Override
     public BoxItem.Info upload(MultipartFile file) {
         try (var stream = file.getInputStream()) {
+            if (isEmpty(stream)) {
+                throw new BoxFileEmptyContentException();
+            }
+            log.info("Uploading a Box file...");
             return root.uploadFile(stream, file.getName());
         } catch (Exception e) {
             throw new BoxApiException(e.getMessage());
@@ -65,5 +74,9 @@ public class QuizBoxClient implements BoxClient {
                 .map(BoxItem.Info::getResource)
                 .map(folder -> cast(folder, BoxFolder.class))
                 .findFirst();
+    }
+
+    private boolean isEmpty(InputStream stream) throws IOException {
+        return stream == null || stream.available() == 0;
     }
 }

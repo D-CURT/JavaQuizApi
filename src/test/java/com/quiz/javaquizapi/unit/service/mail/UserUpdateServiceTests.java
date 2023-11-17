@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Change user update service tests")
+@DisplayName("User update service tests")
 public class UserUpdateServiceTests extends ApiTests {
     @Mock
     private UserUpdateCodeService codeService;
