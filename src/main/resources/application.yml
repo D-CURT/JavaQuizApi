@@ -40,3 +40,11 @@ spring:
     test-connection: false
   liquibase:
     enabled: false
+
+#Box config
+box:
+  client:
+    client-id: med4lfw014ky2lj3o9fuff53navprobl
+    client-secret: OcMEkpuQXYUXH0Bl6lzYf1Ia5oYpbqU2
+    enterprise-id: 311736535
+    user-id: 11949248121
