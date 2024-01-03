@@ -1,4 +1,4 @@
-package com.quiz.javaquizapi.controller.v0.profile;
+package com.quiz.javaquizapi.controller.profile.v0.profile;
 
 import com.quiz.javaquizapi.dto.ProfileDto;
 import com.quiz.javaquizapi.facade.me.profile.ProfileFacade;

@@ -7,8 +7,8 @@ import com.box.sdk.BoxJSONResponse;
 import com.box.sdk.RequestInterceptor;
 import com.box.sdk.http.HttpMethod;
 import com.quiz.javaquizapi.ApiTests;
-import com.quiz.javaquizapi.service.box.BoxClient;
-import com.quiz.javaquizapi.service.box.QuizBoxClient;
+import com.quiz.javaquizapi.service.box.FileClient;
+import com.quiz.javaquizapi.service.box.impl.QuizBoxClient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,7 @@ public class BoxClientTests extends ApiTests {
     private BoxJSONResponse response;
     @Spy
     private BoxAPIConnection api = new BoxAPIConnection(ACCESS_TOKEN);
-    private BoxClient client;
+    private FileClient client;
 
     @BeforeEach
     void setUp() {
@@ -58,6 +58,7 @@ public class BoxClientTests extends ApiTests {
         verify(interceptor, times(2)).onRequest(requestCaptor.capture());
         var request = requestCaptor.getValue();
         assertThat(request).isNotNull();
+        assertThat(request.getMethod()).isEqualTo(HttpMethod.POST.toString());
         assertThat(request.getUrl().toString())
                 .isEqualTo(UriComponentsBuilder.fromHttpUrl(TEST_URL)
                         .pathSegment("folders")
@@ -77,6 +78,7 @@ public class BoxClientTests extends ApiTests {
         verify(interceptor, times(3)).onRequest(requestCaptor.capture());
         var request = requestCaptor.getValue();
         assertThat(request).isNotNull();
+        assertThat(request.getMethod()).isEqualTo(HttpMethod.GET.toString());
         assertThat(request.getUrl().toString())
                 .isEqualTo(UriComponentsBuilder.fromHttpUrl(TEST_URL)
                         .pathSegment("files", TEST_ID, "content")
@@ -98,12 +100,31 @@ public class BoxClientTests extends ApiTests {
         verify(interceptor, times(3)).onRequest(requestCaptor.capture());
         var request = requestCaptor.getValue();
         assertThat(request).isNotNull();
+        assertThat(request.getMethod()).isEqualTo(HttpMethod.POST.toString());
         assertThat(request.getUrl().toString())
                 .isEqualTo(UriComponentsBuilder.fromHttpUrl(UPLOAD_URL)
                         .pathSegment("files", "content")
                         .build()
                         .toString());
         assertThat(captureLogs()).contains("Uploading a Box file...");
+    }
+
+    @Test
+    @DisplayName("Delete box file")
+    public void testDeletingBoxFileGivenValidData() {
+        when(interceptor.onRequest(any(BoxAPIRequest.class))).thenReturn(response);
+        client.delete(TEST_ID);
+        var requestCaptor = ArgumentCaptor.forClass(BoxAPIRequest.class);
+        verify(interceptor, times(3)).onRequest(requestCaptor.capture());
+        var request = requestCaptor.getValue();
+        assertThat(request).isNotNull();
+        assertThat(request.getMethod()).isEqualTo(HttpMethod.DELETE.toString());
+        assertThat(request.getUrl().toString())
+                .isEqualTo(UriComponentsBuilder.fromHttpUrl(TEST_URL)
+                        .pathSegment("files", TEST_ID)
+                        .build()
+                        .toString());
+        assertThat(captureLogs()).contains("Deleting a Box file with ID '123'...");
     }
 
     @AfterEach

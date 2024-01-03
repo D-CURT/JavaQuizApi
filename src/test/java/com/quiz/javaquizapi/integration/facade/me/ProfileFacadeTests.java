@@ -30,7 +30,7 @@ public class ProfileFacadeTests extends ProfileTests {
 
     @Override
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         super.setUp();
         facade = new QuizProfileFacade(service, mapper, userService);
     }

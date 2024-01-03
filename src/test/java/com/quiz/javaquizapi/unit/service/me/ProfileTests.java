@@ -26,12 +26,12 @@ public abstract class ProfileTests extends ApiTests {
     }
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         initLog();
     }
 
     @AfterEach
-    void tearDown() {
+    protected void tearDown() {
         clearLog();
     }
 }

@@ -1,4 +1,4 @@
-package com.quiz.javaquizapi.controller.v0;
+package com.quiz.javaquizapi.controller.user.v0;
 
 import com.quiz.javaquizapi.annotation.AdminAccess;
 import com.quiz.javaquizapi.annotation.MasterAccess;

@@ -2,6 +2,7 @@ package com.quiz.javaquizapi.controller;
 
 import com.quiz.javaquizapi.dto.BaseDto;
 import com.quiz.javaquizapi.facade.QuizFacade;
+import com.quiz.javaquizapi.model.BaseEntity;
 import com.quiz.javaquizapi.model.http.Response;
 import com.quiz.javaquizapi.model.user.QuizUserDetails;
 import com.quiz.javaquizapi.service.response.ResponseService;
@@ -13,13 +14,24 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 /**
  * Provides basic functionality of all controllers.
  *
+ * @param <E> entity type.
  * @param <D> data transfer type.
  */
 @Getter
 @RequiredArgsConstructor
-public abstract class BaseController<D extends BaseDto> {
+public abstract class BaseController<E extends BaseEntity, D extends BaseDto> {
     private final ResponseService responseService;
-    private final QuizFacade<D> facade;
+    private final QuizFacade<E, D> facade;
+
+    /**
+     * Requests an entity by its code.
+     *
+     * @param code entity code.
+     * @return a {@link Response} with an object of {@link D} type in it.
+     */
+    public Response get(String code) {
+        return getResponseService().build(getFacade().get(code));
+    }
 
     /**
      * Creates an entity withing the system and returns it then.

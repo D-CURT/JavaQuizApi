@@ -1,6 +1,7 @@
 package com.quiz.javaquizapi.facade.mapping;
 
 import com.quiz.javaquizapi.model.BaseEntity;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,8 @@ public interface Mapper {
      * @param destination destination object.
      */
     void map(Object source, Object destination);
+
+    <S, D> Page<D> mapPage(Page<S> page, Class<D> target);
 
     /**
      * Does lists conversion.

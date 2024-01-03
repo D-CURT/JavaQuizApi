@@ -22,10 +22,10 @@ public class QuizProfileFacade extends BaseMeFacade<Profile, ProfileDto> impleme
     @Override
     public void create(ProfileDto data) {
         log.info("Crating a new trainee profile...");
-        var profile = mapper.map(data, Profile.class);
+        var profile = mapper().map(data, Profile.class);
         profile.setUser(userService.getMe(data.getUsername()));
-        service.create(profile);
-        mapper.map(profile, data);
+        service().create(profile);
+        mapper().map(profile, data);
         log.info("Profile created successfully: tier - Trainee, score - 0, rate - 0.");
     }
 }

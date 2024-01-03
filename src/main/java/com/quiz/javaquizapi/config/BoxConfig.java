@@ -1,8 +1,8 @@
 package com.quiz.javaquizapi.config;
 
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
-import com.quiz.javaquizapi.service.box.BoxClient;
-import com.quiz.javaquizapi.service.box.QuizBoxClient;
+import com.quiz.javaquizapi.service.box.FileClient;
+import com.quiz.javaquizapi.service.box.impl.QuizBoxClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +28,7 @@ public class BoxConfig {
     private String userId;
 
     @Bean
-    public BoxClient boxClient() throws IOException {
+    public FileClient boxClient() throws IOException {
         com.box.sdk.BoxConfig config;
         try (Reader reader = new FileReader(CONFIG_PATH)) {
             config = com.box.sdk.BoxConfig.readFrom(reader);

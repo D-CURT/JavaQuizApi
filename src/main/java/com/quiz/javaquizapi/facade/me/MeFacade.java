@@ -10,7 +10,7 @@ import com.quiz.javaquizapi.model.BaseEntity;
  * @param <E> entity type.
  * @param <D> data type.
  */
-public interface MeFacade<E extends BaseEntity, D extends BaseDto> extends QuizFacade<D> {
+public interface MeFacade<E extends BaseEntity, D extends BaseDto> extends QuizFacade<E, D> {
     /**
      * Fetches entity by the current username.
      * <p>Converts the result into a proper data object.

@@ -17,13 +17,13 @@ public abstract class ParentResourceTests extends MeDaoTests<ResourceFolderRepos
 
     @BeforeEach
     void setUp() {
-        root = new ResourceFolder().setPath(ResourceFolder.ROOT_PATH);
+        root = new ResourceFolder().setName(ResourceFolder.ROOT_PATH);
         root.setCode(UUID.randomUUID().toString());
         getRepository().save(root);
-        firstLayer = new ResourceFolder().setParent(root).setPath("folder1");
+        firstLayer = new ResourceFolder().setParent(root).setName("folder1");
         firstLayer.setCode(UUID.randomUUID().toString());
         getRepository().save(firstLayer);
-        secondLayer = new ResourceFolder().setParent(firstLayer).setPath("folder2");
+        secondLayer = new ResourceFolder().setParent(firstLayer).setName("folder2");
         secondLayer.setCode(UUID.randomUUID().toString());
         getRepository().save(secondLayer);
     }

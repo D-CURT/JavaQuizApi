@@ -32,9 +32,9 @@ public class QuizUserFacade extends BaseMeFacade<User, UserDto> implements UserF
     @Override
     public void create(UserDto dto) {
         log.info("Starting a new user authorization...");
-        var user = mapper.map(dto, com.quiz.javaquizapi.model.user.User.class);
-        service.create(user);
-        mapper.map(user, dto);
+        var user = mapper().map(dto, com.quiz.javaquizapi.model.user.User.class);
+        service().create(user);
+        mapper().map(user, dto);
         log.info("User authorization succeeded.");
     }
 
@@ -46,25 +46,25 @@ public class QuizUserFacade extends BaseMeFacade<User, UserDto> implements UserF
     @Override
     public void updateMe(UserUpdateCodeDto dto) {
         var code = codeService.getMe(dto.getUsername());
-        mapper.map(dto, code);
+        mapper().map(dto, code);
         updateService.updateUser(code.setUser(new User().setUsername(dto.getUsername())));
         log.info("The current user updated successfully.");
     }
 
     @Override
     public void updateRole(UserDto data) {
-        var user = service.get(data.getCode());
-        mapper.map(data, user);
-        cast(service, UserService.class).update(user);
+        var user = service().get(data.getCode());
+        mapper().map(data, user);
+        cast(service(), UserService.class).update(user);
         log.info("User role have been changed to '{}'.", user.getRole());
     }
 
     @Override
     public void archive(String code) {
         log.info("Archiving a user...");
-        var user = service.get(code);
+        var user = service().get(code);
         user.setEnabled(Boolean.FALSE);
-        cast(service, UserService.class).update(user);
+        cast(service(), UserService.class).update(user);
         log.info("User archived.");
     }
 }

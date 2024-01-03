@@ -1,5 +1,6 @@
 package com.quiz.javaquizapi.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -19,6 +20,7 @@ public abstract class BaseDto implements Serializable {
      * <p>otherwise a new value will be generated and then show in a response,
      * if an entity creation succeeded.
      */
+    @NotBlank(groups = Update.class, message = "api.errorCode.40")
     private String code;
 
     public interface Create {

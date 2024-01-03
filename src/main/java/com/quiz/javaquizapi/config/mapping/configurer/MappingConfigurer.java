@@ -52,10 +52,11 @@ public interface MappingConfigurer {
          * <p>Aggregates accepted consumer for the TypeMap.
          * @param consumer function to configure a TypeMap.
          */
-        void aggregate(Consumer<TypeMap<S, D>> consumer) {
+        TypeMapAggregator<S, D> aggregate(Consumer<TypeMap<S, D>> consumer) {
             Optional.ofNullable(mapper.getTypeMap(source, destination))
                     .or(() -> Optional.of(mapper.createTypeMap(source, destination)))
                     .ifPresent(consumer);
+            return this;
         }
 
         /**
@@ -64,8 +65,9 @@ public interface MappingConfigurer {
          * @param supplier post converter builder.
          * @param <T> converter type.
          */
-        <T extends Converter<S, D>> void postConvert(Supplier<T> supplier) {
+        <T extends Converter<S, D>> TypeMapAggregator<S, D> postConvert(Supplier<T> supplier) {
             aggregate(mapping -> mapping.setPostConverter(supplier.get()));
+            return this;
         }
     }
 }

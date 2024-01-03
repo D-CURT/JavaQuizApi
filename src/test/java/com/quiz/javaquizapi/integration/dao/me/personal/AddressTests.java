@@ -42,5 +42,6 @@ public class AddressTests extends PersonalDaoTests<AddressRepository> {
                     assertTrue(CollectionUtils.isNotEmpty(addresses));
                     assertThat(addresses.size()).isEqualTo(3);
                 }, () -> Assertions.fail("Addresses not found"));
+        assertExecutedQueries();
     }
 }

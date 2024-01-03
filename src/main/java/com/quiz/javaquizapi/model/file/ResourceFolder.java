@@ -21,6 +21,9 @@ public class ResourceFolder extends BaseEntity {
     public static final String ROOT_PATH = StringUtils.EMPTY;
 
     @NotNull
+    private String name;
+
+    @NotNull
     private String path;
 
     @ManyToOne
@@ -28,10 +31,20 @@ public class ResourceFolder extends BaseEntity {
     @EqualsAndHashCode.Exclude
     private ResourceFolder parent;
 
+    public ResourceFolder setName(String name) {
+        this.name = name;
+        return setPath(name);
+    }
+
     public ResourceFolder setPath(String path) {
         this.path = parent == null || StringUtils.isBlank(parent.getPath())
                 ? path
                 : String.join(".", parent.getPath(), path);
         return this;
+    }
+
+    public ResourceFolder setParent(ResourceFolder parent) {
+        this.parent = parent;
+        return setName(name);
     }
 }

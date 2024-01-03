@@ -33,5 +33,6 @@ public class ContactTests extends PersonalDaoTests<ContactRepository> {
                     assertThat(contact.getCode()).isEqualTo(testContact.getCode());
                     assertThat(contact.getInfo().getCode()).isEqualTo(INFO_CODE);
                 }, () -> Assertions.fail("Contact not found"));
+        assertExecutedQueries();
     }
 }

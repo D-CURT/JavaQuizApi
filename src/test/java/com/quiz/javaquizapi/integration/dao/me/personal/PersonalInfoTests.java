@@ -21,11 +21,13 @@ public class PersonalInfoTests extends PersonalDaoTests<PersonalInfoRepository> 
                     assertThat(info.getProfile().getCode()).isEqualTo(PROFILE_CODE);
                     assertThat(info.getCode()).isEqualTo(getTestInfo().getCode());
                 }, () -> Assertions.fail("Personal Info not found"));
+        assertExecutedQueries();
     }
 
     @Test
     @DisplayName("Check if A personal info exists by its profile code")
     public void testExistingPersonalInfoByProfileCode() {
         assertTrue(getInfoRepository().existsByProfileCode(PROFILE_CODE));
+        assertExecutedQueries();
     }
 }

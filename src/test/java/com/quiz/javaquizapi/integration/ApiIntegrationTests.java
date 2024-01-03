@@ -12,6 +12,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @Import(MappingConfig.class)
 @ExtendWith(MockitoExtension.class)
-@SpringJUnitConfig(classes = {MeMappingConfigurer.class, AddressMappingConfigurer.class, QuizModelMapper.class})
+@SpringJUnitConfig(classes = {
+        MeMappingConfigurer.class,
+        AddressMappingConfigurer.class,
+        QuizModelMapper.class})
 public class ApiIntegrationTests extends ApiTests {
 }

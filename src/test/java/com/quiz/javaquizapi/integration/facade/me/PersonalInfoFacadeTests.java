@@ -60,7 +60,7 @@ public class PersonalInfoFacadeTests extends ProfileTests {
 
     @Override
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         super.setUp();
         facade = new QuizPersonalInfoFacade(
                 infoService,

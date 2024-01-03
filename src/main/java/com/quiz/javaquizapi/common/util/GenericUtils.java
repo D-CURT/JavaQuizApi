@@ -1,5 +1,11 @@
 package com.quiz.javaquizapi.common.util;
 
+import com.quiz.javaquizapi.model.BaseEntity;
+import com.quiz.javaquizapi.service.QuizService;
+import com.quiz.javaquizapi.service.me.MeService;
+import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
@@ -40,6 +46,10 @@ public final class GenericUtils {
         }
     }
 
+    public static <T extends BaseEntity> MeService<T> castMe(QuizService<T> service) {
+        return cast(service, new TypeToken<MeService<T>>() {}.getRawType());
+    }
+
     @SuppressWarnings("all")
     private static <T, G> Class<G> findGeneric(Class<T> type, int index) {
         try {
@@ -57,5 +67,9 @@ public final class GenericUtils {
                  NoSuchMethodException e) {
             throw new IllegalStateException("Unable to construct an object", e);
         }
+    }
+
+    public static <T> Class<Page<T>> getPagedTypeOf(Class<T> type) {
+        return new TypeToken<Page<T>>() {}.getRawType();
     }
 }

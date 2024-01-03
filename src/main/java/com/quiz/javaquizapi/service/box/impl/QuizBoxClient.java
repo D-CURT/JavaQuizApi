@@ -1,4 +1,4 @@
-package com.quiz.javaquizapi.service.box;
+package com.quiz.javaquizapi.service.box.impl;
 
 import com.box.sdk.BoxAPIConnection;
 import com.box.sdk.BoxAPIResponseException;
@@ -7,6 +7,8 @@ import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxItem;
 import com.quiz.javaquizapi.exception.box.BoxApiException;
 import com.quiz.javaquizapi.exception.box.BoxFileEmptyContentException;
+import com.quiz.javaquizapi.service.box.FileClient;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,11 +24,12 @@ import static com.quiz.javaquizapi.common.util.GenericUtils.cast;
 
 @Slf4j
 @RequiredArgsConstructor(staticName = "of")
-public class QuizBoxClient implements BoxClient {
+public class QuizBoxClient implements FileClient {
     public static final String ROOT_NAME = "Java Quiz API";
     public static final String[] BASIC_INFO_FIELDS = {"id", "name"};
     public static final int BOX_ITEM_ALREADY_EXIST_CODE = 409;
     private final BoxAPIConnection api;
+    @Getter
     private BoxFolder root;
 
     public QuizBoxClient init() {
@@ -55,13 +58,23 @@ public class QuizBoxClient implements BoxClient {
     }
 
     @Override
-    public BoxItem.Info upload(MultipartFile file) {
+    public String upload(MultipartFile file) {
         try (var stream = file.getInputStream()) {
             if (isEmpty(stream)) {
                 throw new BoxFileEmptyContentException();
             }
             log.info("Uploading a Box file...");
-            return root.uploadFile(stream, file.getName());
+            return root.uploadFile(stream, file.getName()).getID();
+        } catch (Exception e) {
+            throw new BoxApiException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(String id) {
+        log.info("Deleting a Box file with ID '{}'...", id);
+        try {
+            new BoxFile(api, id).delete();
         } catch (Exception e) {
             throw new BoxApiException(e.getMessage());
         }

@@ -21,7 +21,7 @@ import java.util.Optional;
  * @param <E> entity type.
  * @param <D> data transfer type.
  */
-public abstract class BaseMeController<E extends BaseEntity, D extends BaseDto> extends BaseController<D> {
+public abstract class BaseMeController<E extends BaseEntity, D extends BaseDto> extends BaseController<E, D> {
     public BaseMeController(ResponseService responseService, MeFacade<E, D> facade) {
         super(responseService, facade);
     }

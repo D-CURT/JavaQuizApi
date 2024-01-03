@@ -22,7 +22,7 @@ import lombok.experimental.Accessors;
 @Table(name = "resources")
 public class Resource extends BaseEntity {
     @NotNull
-    private String resource_id;
+    private String resourceId;
 
     @Enumerated(EnumType.STRING)
     private ResourceStatus status;

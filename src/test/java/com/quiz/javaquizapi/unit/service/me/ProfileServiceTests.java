@@ -32,7 +32,7 @@ public class ProfileServiceTests extends ProfileTests {
 
     @Override
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         super.setUp();
         service = new QuizProfileService(repository);
     }

@@ -6,6 +6,7 @@ import com.quiz.javaquizapi.model.file.Resource;
 import com.quiz.javaquizapi.model.file.ResourceFolder;
 import com.quiz.javaquizapi.model.file.ResourceStatus;
 import com.quiz.javaquizapi.model.profile.Profile;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,6 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Resource DAO tests")
 public class ResourceTests extends ParentResourceTests {
@@ -39,6 +39,7 @@ public class ResourceTests extends ParentResourceTests {
         localProfile.setCode(UUID.randomUUID().toString());
         profileRepository.save(localProfile);
         createResources(2, ResourceStatus.READY_FOR_REVIEW, getSecondLayer());
+        createResources(3, ResourceStatus.APPROVED, getSecondLayer());
         createResources(2, ResourceStatus.READY_FOR_REVIEW, getRoot());
         createResources(5, ResourceStatus.APPROVED, getFirstLayer());
         createResources(3, ResourceStatus.SAVED);
@@ -49,10 +50,14 @@ public class ResourceTests extends ParentResourceTests {
     public void testFetchingApprovedGivenPageParams() {
         var approved = resourceRepository.findAllApproved(Pageable.ofSize(PAGE_SIZE));
         assertThat(approved).isNotNull();
-        assertThat(approved.get().count()).isEqualTo(5);
-        assertTrue(approved.get().map(Resource::getStatus).allMatch(ResourceStatus.APPROVED::equals));
-        assertTrue(approved.get().map(Resource::getApprovedBy).allMatch(localProfile::equals));
-        assertTrue(approved.get().map(Resource::getFolder).allMatch(getFirstLayer()::equals));
+        assertThat(approved.get().count()).isEqualTo(8);
+        assertThat(approved.get().map(Resource::getStatus)).allMatch(ResourceStatus.APPROVED::equals);
+        assertThat(approved.get().map(Resource::getApprovedBy)).allMatch(localProfile::equals);
+        assertThat(approved.get().map(Resource::getFolder).filter(getFirstLayer()::equals).count())
+                .isEqualTo(5);
+        assertThat(approved.get().map(Resource::getFolder).filter(getSecondLayer()::equals).count())
+                .isEqualTo(3);
+        assertExecutedQueries();
     }
 
     @Test
@@ -61,7 +66,8 @@ public class ResourceTests extends ParentResourceTests {
         var resources = resourceRepository.findAllReadyForReview(Pageable.ofSize(PAGE_SIZE));
         assertThat(resources).isNotNull();
         assertThat(resources.get().count()).isEqualTo(4);
-        assertTrue(resources.get().map(Resource::getStatus).allMatch(ResourceStatus.READY_FOR_REVIEW::equals));
+        assertThat(resources.get().map(Resource::getStatus)).allMatch(ResourceStatus.READY_FOR_REVIEW::equals);
+        assertExecutedQueries();
     }
 
     @Test
@@ -70,9 +76,10 @@ public class ResourceTests extends ParentResourceTests {
         var saved = resourceRepository.findByStatus(ResourceStatus.SAVED, Pageable.ofSize(PAGE_SIZE));
         assertThat(saved).isNotNull();
         assertThat(saved.get().count()).isEqualTo(3);
-        assertTrue(saved.get().map(Resource::getStatus).allMatch(ResourceStatus.SAVED::equals));
-        assertTrue(saved.get().map(Resource::getApprovedBy).allMatch(Objects::isNull));
-        assertTrue(saved.get().map(Resource::getFolder).allMatch(getRoot()::equals));
+        assertThat(saved.get().map(Resource::getStatus)).allMatch(ResourceStatus.SAVED::equals);
+        assertThat(saved.get().map(Resource::getApprovedBy)).allMatch(Objects::isNull);
+        assertThat(saved.get().map(Resource::getFolder)).allMatch(getRoot()::equals);
+        assertExecutedQueries();
     }
 
     @Test
@@ -80,10 +87,14 @@ public class ResourceTests extends ParentResourceTests {
     public void testFetchingApprovedGivenApproverCode() {
         var approved = resourceRepository.findByApprovedByCode(localProfile.getCode(), Pageable.ofSize(PAGE_SIZE));
         assertThat(approved).isNotNull();
-        assertThat(approved.get().count()).isEqualTo(5);
-        assertTrue(approved.get().map(Resource::getStatus).allMatch(ResourceStatus.APPROVED::equals));
-        assertTrue(approved.get().map(Resource::getApprovedBy).allMatch(localProfile::equals));
-        assertTrue(approved.get().map(Resource::getFolder).allMatch(getFirstLayer()::equals));
+        assertThat(approved.get().count()).isEqualTo(8);
+        assertThat(approved.get().map(Resource::getStatus)).allMatch(ResourceStatus.APPROVED::equals);
+        assertThat(approved.get().map(Resource::getApprovedBy)).allMatch(localProfile::equals);
+        assertThat(approved.get().map(Resource::getFolder).filter(getFirstLayer()::equals).count())
+                .isEqualTo(5);
+        assertThat(approved.get().map(Resource::getFolder).filter(getSecondLayer()::equals).count())
+                .isEqualTo(3);
+        assertExecutedQueries();
     }
 
     @Test
@@ -91,12 +102,12 @@ public class ResourceTests extends ParentResourceTests {
     public void testFetchingResourcesGivenCreatorCode() {
         var resources = resourceRepository.findByCreatedByCode(localProfile.getCode(), Pageable.ofSize(PAGE_SIZE));
         assertThat(resources).isNotNull();
-        assertThat(resources.get().count()).isEqualTo(12);
+        assertThat(resources.get().count()).isEqualTo(15);
         assertThat(resources.get()
                 .map(Resource::getStatus)
                 .filter(ResourceStatus.APPROVED::equals)
                 .count())
-                .isEqualTo(5);
+                .isEqualTo(8);
         assertThat(resources.get()
                 .map(Resource::getStatus)
                 .filter(ResourceStatus.SAVED::equals)
@@ -107,7 +118,8 @@ public class ResourceTests extends ParentResourceTests {
                 .filter(ResourceStatus.READY_FOR_REVIEW::equals)
                 .count())
                 .isEqualTo(4);
-        assertTrue(resources.get().map(Resource::getCreatedBy).allMatch(localProfile::equals));
+        assertThat(resources.get().map(Resource::getCreatedBy)).allMatch(localProfile::equals);
+        assertExecutedQueries();
     }
 
     @Test
@@ -115,9 +127,22 @@ public class ResourceTests extends ParentResourceTests {
     public void testFetchingResourceGivenFolderPath() {
         var resources = resourceRepository.findByFolderPath(getSecondLayer().getPath(), Pageable.ofSize(PAGE_SIZE));
         assertThat(resources).isNotNull();
-        assertThat(resources.get().count()).isEqualTo(2);
-        assertTrue(resources.get().map(Resource::getStatus).allMatch(ResourceStatus.READY_FOR_REVIEW::equals));
-        assertTrue(resources.get().map(Resource::getFolder).allMatch(getSecondLayer()::equals));
+        assertThat(resources.get().count()).isEqualTo(3);
+        assertThat(resources.get().map(Resource::getStatus)).allMatch(ResourceStatus.APPROVED::equals);
+        assertThat(resources.get().map(Resource::getFolder)).allMatch(getSecondLayer()::equals);
+        assertExecutedQueries();
+    }
+
+    @Test
+    @DisplayName("Delete a resource")
+    public void testDeletingResourceGivenValidCode() {
+        var resource = initResource(START_INCLUSIVE, ResourceStatus.SAVED, getRoot());
+        resourceRepository.save(resource);
+        resourceRepository.findByCode(resource.getCode())
+                .ifPresentOrElse(res -> assertThat(resourceRepository.deleteByCode(resource.getCode()))
+                                .isEqualTo(1),
+                        () -> Assertions.fail("Unable to delete a resource"));
+        assertExecutedQueries(ExecutedQueries.TWO);
     }
 
     private void createResources(int number, ResourceStatus status) {
@@ -134,7 +159,7 @@ public class ResourceTests extends ParentResourceTests {
     }
 
     private Resource initResource(int index, ResourceStatus status, ResourceFolder parent) {
-        var resource = new Resource().setCreatedBy(localProfile).setResource_id(String.valueOf(index)).setStatus(status)
+        var resource = new Resource().setCreatedBy(localProfile).setResourceId(String.valueOf(index)).setStatus(status)
                 .setFolder(parent);
         resource.setCode(UUID.randomUUID().toString());
         if (ResourceStatus.APPROVED.equals(status)) {

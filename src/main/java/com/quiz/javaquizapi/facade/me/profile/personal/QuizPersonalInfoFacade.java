@@ -59,32 +59,32 @@ public class QuizPersonalInfoFacade extends BaseMeFacade<PersonalInfo, PersonalI
     @Override
     public PersonalInfoFullDto getFull(String profileCode) {
         log.info("Fetching a full personal info...");
-        var info = cast(service, PersonalInfoService.class).getPersonalInfoByProfileCode(profileCode);
-        var dto = mapper.map(info, PersonalInfoFullDto.class);
+        var info = cast(service(), PersonalInfoService.class).getPersonalInfoByProfileCode(profileCode);
+        var dto = mapper().map(info, PersonalInfoFullDto.class);
         var contact = contactService.getByPersonalInfoCode(info.getCode());
-        dto.setContact(mapper.map(contact, ContactFullDto.class));
+        dto.setContact(mapper().map(contact, ContactFullDto.class));
         dto.getContact()
-                .setMedias(mapper.mapList(mediaService.getByContactCode(contact.getCode()), SocialMediaDto.class));
-        dto.setAddresses(mapper.mapList(addressService.getByPersonalInfoCode(info.getCode()), AddressDto.class));
+                .setMedias(mapper().mapList(mediaService.getByContactCode(contact.getCode()), SocialMediaDto.class));
+        dto.setAddresses(mapper().mapList(addressService.getByPersonalInfoCode(info.getCode()), AddressDto.class));
         return dto;
     }
 
     @Override
     public void create(PersonalInfoDto dto) {
         log.info("Creating an empty personal info for the current user...");
-        PersonalInfo entity = mapper.map(dto, PersonalInfo.class);
+        PersonalInfo entity = mapper().map(dto, PersonalInfo.class);
         entity.setProfile(profileService.getMe(dto.getUsername()));
-        service.create(entity);
-        mapper.map(entity, dto);
+        service().create(entity);
+        mapper().map(entity, dto);
         log.info("A personal info object successfully created.");
     }
 
     @Override
     public void updateMe(PersonalInfoDto data) {
         log.info("Saving an updated personal info...");
-        var me = service.getMe(data.getUsername());
-        mapper.map(data, me);
-        cast(service, PersonalInfoService.class).update(me);
+        var me = service().getMe(data.getUsername());
+        mapper().map(data, me);
+        cast(service(), PersonalInfoService.class).update(me);
         log.info("Personal info successfully updated.");
     }
 
@@ -94,7 +94,7 @@ public class QuizPersonalInfoFacade extends BaseMeFacade<PersonalInfo, PersonalI
                 cast(addressService, QuizAddressService.class),
                 data,
                 Address::setInfo,
-                service.get(data.getInfoCode()));
+                service().get(data.getInfoCode()));
     }
 
     @Override
@@ -103,7 +103,7 @@ public class QuizPersonalInfoFacade extends BaseMeFacade<PersonalInfo, PersonalI
                 cast(contactService, QuizContactService.class),
                 data,
                 Contact::setInfo,
-                service.get(data.getInfoCode()));
+                service().get(data.getInfoCode()));
     }
 
     @Override
@@ -124,7 +124,7 @@ public class QuizPersonalInfoFacade extends BaseMeFacade<PersonalInfo, PersonalI
                 StringUtils.isBlank(data.getCode())
                         ? setter.apply(GenericUtils.create(personalService.getEntityType()), value)
                         : personalService.get(data.getCode());
-        mapper.map(data, entity);
+        mapper().map(data, entity);
         personalService.update(entity);
         log.info("{} saved successfully.", entityName);
     }

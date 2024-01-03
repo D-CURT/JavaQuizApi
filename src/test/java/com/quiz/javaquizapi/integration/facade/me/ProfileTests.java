@@ -23,7 +23,7 @@ public abstract class ProfileTests extends ApiIntegrationTests {
     }
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         initLog();
     }
 
